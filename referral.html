@@ -33,24 +33,16 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
   width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer}
 
 .container{max-width:640px;margin:0 auto;padding:20px 16px}
-.section-title{font-size:18px;font-weight:700;margin-bottom:14px}
-.section-title span{color:var(--primary)}
 
-/* MAIN REFERRAL CARD */
 .referral-hero{background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,46,99,.15));
   border:2px solid var(--gold);border-radius:20px;padding:24px 20px;
   text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
-.referral-hero::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;
-  height:200%;background:radial-gradient(circle,rgba(255,215,0,.15),transparent 70%);
-  animation:rotate 8s linear infinite;pointer-events:none}
-@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.referral-hero .hero-icon{font-size:52px;margin-bottom:10px;position:relative}
-.referral-hero h2{font-size:22px;font-weight:800;margin-bottom:6px;position:relative;
-  color:var(--gold)}
-.referral-hero p{font-size:13px;color:var(--muted);margin-bottom:20px;position:relative;line-height:1.4}
+.referral-hero .hero-icon{font-size:52px;margin-bottom:10px}
+.referral-hero h2{font-size:22px;font-weight:800;margin-bottom:6px;color:var(--gold)}
+.referral-hero p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.4}
 
 .code-box{background:var(--bg);border:2px dashed var(--gold);border-radius:14px;
-  padding:16px;margin-bottom:14px;position:relative}
+  padding:16px;margin-bottom:14px}
 .code-box .label{font-size:10px;color:var(--muted);text-transform:uppercase;
   letter-spacing:1px;margin-bottom:8px}
 .code-box .code{font-family:'Courier New',monospace;font-size:26px;font-weight:900;
@@ -61,7 +53,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .code-box .copy-btn:active{transform:scale(.96)}
 .code-box .copy-btn.copied{background:var(--success);color:#fff}
 
-/* STATS GRID */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
 .stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;
   padding:16px;text-align:center}
@@ -71,7 +62,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .stat-box.gold .num{color:var(--gold)}
 .stat-box.green .num{color:var(--success)}
 
-/* SHARE BUTTONS */
 .share-section{background:var(--bg2);border-radius:16px;padding:18px;
   border:1px solid var(--border);margin-bottom:20px}
 .share-section h3{font-size:15px;margin-bottom:14px;text-align:center}
@@ -86,7 +76,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .share-btn.copy{background:var(--bg3);border:1px solid var(--border)}
 .share-btn.sms{background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
 
-/* REFERRED LIST */
 .referred-list{background:var(--bg2);border-radius:16px;padding:16px;
   border:1px solid var(--border)}
 .referred-list h3{font-size:15px;margin-bottom:14px}
@@ -138,7 +127,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 </div>
 
 <div class="container">
-  <!-- HERO -->
   <div class="referral-hero">
     <div class="hero-icon">🎁</div>
     <h2>Earn ₹100 Per Referral</h2>
@@ -151,7 +139,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-box">
       <div class="num" id="totalReferred">0</div>
@@ -163,7 +150,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
     </div>
   </div>
 
-  <!-- SHARE -->
   <div class="share-section">
     <h3>📤 Share Your Code</h3>
     <div class="share-grid">
@@ -186,7 +172,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
     </div>
   </div>
 
-  <!-- REFERRED USERS -->
   <div class="referred-list">
     <h3>👥 People You Referred</h3>
     <div id="referredList">
@@ -220,6 +205,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+/* ============================================================
+   🔥 APK DOWNLOAD LINK — CHANGE THIS IF YOU UPDATE APK
+   ============================================================ */
+const APK_URL = 'https://github.com/saineek123/VELORA-Boy/releases/download/v.0/app-release.6.apk';
+const APP_NAME = 'VELORA Boy';
+const REFERRAL_BONUS = 100;
+
 let me = null;
 
 function toast(msg, type) {
@@ -233,10 +225,6 @@ function toast(msg, type) {
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
-function getBaseUrl() {
-  return window.location.href.split('/').slice(0, -1).join('/');
 }
 
 /* ============================================================
@@ -272,7 +260,7 @@ async function ensureReferralCode() {
 }
 
 /* ============================================================
-   LOAD STATS + REFERRED LIST
+   LOAD STATS
    ============================================================ */
 async function loadStats() {
   try {
@@ -303,7 +291,7 @@ async function loadStats() {
 }
 
 /* ============================================================
-   SHARE
+   COPY CODE
    ============================================================ */
 window.copyCode = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
@@ -319,37 +307,51 @@ window.copyCode = function() {
   }).catch(() => toast('Copy failed', 'error'));
 };
 
+/* ============================================================
+   SHARE FUNCTIONS — WITH APK LINK
+   ============================================================ */
 window.shareWhatsApp = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
-  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
-  const text = `🎁 Join PlayBoy Rentals & get ₹100 bonus!\n\n` +
-               `Use my code: *${me.referralCode}*\n\n` +
-               `Sign up here: ${url}\n\n` +
-               `You'll get ₹100 in your wallet, and I'll get ₹100 too! 💰`;
+  const text =
+    `🎁 *${APP_NAME}* — Premium Companionship App!\n\n` +
+    `💰 Get ₹${REFERRAL_BONUS} bonus on signup!\n\n` +
+    `📱 Download App:\n${APK_URL}\n\n` +
+    `🎟️ Use my referral code:\n*${me.referralCode}*\n\n` +
+    `You'll get ₹${REFERRAL_BONUS} in your wallet, and I'll get ₹${REFERRAL_BONUS} too! 🚀`;
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 };
 
 window.shareTelegram = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
-  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
-  const text = `🎁 Join PlayBoy Rentals & get ₹100 bonus!\n\n` +
-               `Use my code: ${me.referralCode}\n\n` +
-               `${url}`;
-  window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank');
+  const text =
+    `🎁 *${APP_NAME}* — Premium App!\n\n` +
+    `📱 Download: ${APK_URL}\n\n` +
+    `🎟️ Use my code: *${me.referralCode}*\n\n` +
+    `Get ₹${REFERRAL_BONUS} bonus instantly! 💰`;
+  window.open(
+    'https://t.me/share/url?url=' + encodeURIComponent(APK_URL) +
+    '&text=' + encodeURIComponent(text),
+    '_blank'
+  );
 };
 
 window.shareLink = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
-  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
-  navigator.clipboard.writeText(url).then(() => {
-    toast('🔗 Link copied!', 'success');
+  const text =
+    `🎁 Join ${APP_NAME} & get ₹${REFERRAL_BONUS} bonus!\n\n` +
+    `📱 Download App:\n${APK_URL}\n\n` +
+    `🎟️ Referral Code: ${me.referralCode}\n\n` +
+    `Use code during signup to claim bonus 💰`;
+  navigator.clipboard.writeText(text).then(() => {
+    toast('🔗 APK link + code copied!', 'success');
   }).catch(() => toast('Copy failed', 'error'));
 };
 
 window.shareSMS = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
-  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
-  const text = `Join PlayBoy Rentals! Use my code ${me.referralCode} for ₹100 bonus: ${url}`;
+  const text =
+    `Join ${APP_NAME}! Download: ${APK_URL} ` +
+    `Use code ${me.referralCode} for ₹${REFERRAL_BONUS} bonus`;
   window.location.href = 'sms:?body=' + encodeURIComponent(text);
 };
 
