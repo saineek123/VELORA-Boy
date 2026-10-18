@@ -316,7 +316,7 @@ const db = getDatabase(app);
 /* ============================================================
    🔥 CONSTANTS — CHANGE APK URL WHEN YOU UPDATE
    ============================================================ */
-const APK_URL = 'https://github.com/saineek123/VELORA-Boy/releases/download/v.0/app-release.6.apk';
+const APK_URL = 'https://github.com/saineek123/VELORA-Boy/releases/download/v.0/app-release.7.apk';
 const APP_NAME = 'VELORA Boy';
 const REFERRAL_BONUS = 100;
 
@@ -427,7 +427,7 @@ window.shareProfileLink = function() {
 };
 
 /* ============================================================
-   RENDER PROFILE
+   RENDER PROFILE (FIXED FLOW)
    ============================================================ */
 function renderProfile() {
   const box = document.getElementById('profileBox');
@@ -436,10 +436,17 @@ function renderProfile() {
   if (!me) return;
 
   let badge = '';
-  if (me.status === 'active' && me.verified) badge = '<div class="badge verified">✓ KYC Verified</div>';
-  else if (me.status === 'kyc_pending') badge = '<div class="badge pending">⏳ Waiting Approval</div>';
-  else if (me.status === 'rejected') badge = '<div class="badge rejected">❌ KYC Rejected</div>';
-  else if (me.status === 'blocked') badge = '<div class="badge blocked">🚫 Blocked</div>';
+  if (me.status === 'active' && me.verified) {
+    badge = '<div class="badge verified">✓ KYC Verified</div>';
+  } else if (me.status === 'kyc_pending' && me.kycDone) {
+    badge = '<div class="badge pending">⏳ Waiting Approval</div>';
+  } else if (me.status === 'rejected') {
+    badge = '<div class="badge rejected">❌ KYC Rejected</div>';
+  } else if (me.status === 'blocked') {
+    badge = '<div class="badge blocked">🚫 Blocked</div>';
+  } else {
+    badge = '<div class="badge" style="background:var(--primary);color:#fff">📝 Complete Profile</div>';
+  }
 
   let ratingLine = '';
   if (me.avgRating > 0) {
@@ -458,7 +465,6 @@ function renderProfile() {
     ? `<div class="wallet-line">💰 Wallet: ₹${me.walletBalance}</div>`
     : '';
 
-  // Referral + Share section (only for active+verified)
   let referralSection = '';
   if (me.status === 'active' && me.verified) {
     referralSection = `
@@ -502,7 +508,9 @@ function renderProfile() {
     </div>
   `;
 
+  // --- FLOW LOGIC ---
   if (me.kycDone && me.status === 'active') {
+    // Approved & Active -> Show Edit Mode
     editMode.classList.remove('hidden');
     setupMode.classList.add('hidden');
 
@@ -522,10 +530,12 @@ function renderProfile() {
         ? `<img src="${editingPhoto}">`
         : (me.photo ? `<img src="${me.photo}">` : '👨');
     }
-  } else if (me.status === 'kyc_pending') {
+  } else if (me.kycDone && me.status === 'kyc_pending') {
+    // Completed KYC, waiting for Admin -> Show nothing (just profile box)
     editMode.classList.add('hidden');
     setupMode.classList.add('hidden');
   } else if (me.status === 'rejected') {
+    // Rejected -> Show setup mode again to retry
     editMode.classList.add('hidden');
     setupMode.classList.remove('hidden');
     if (me.rejectionReason) {
@@ -537,8 +547,11 @@ function renderProfile() {
       </div>`;
     }
   } else {
+    // New user or KYC incomplete -> Force Setup Mode
     editMode.classList.add('hidden');
     setupMode.classList.remove('hidden');
+
+    // Pre-fill whatever they might have typed
     if (me.age && !document.getElementById('k-age').value)
       document.getElementById('k-age').value = me.age;
     if (me.gender && !document.getElementById('k-gender').value)
@@ -549,6 +562,14 @@ function renderProfile() {
       document.getElementById('k-bio').value = me.bio;
     if (me.lang && !document.getElementById('k-lang').value)
       document.getElementById('k-lang').value = me.lang;
+
+    // If they finished step 1 & 2, take them to step 3
+    if (me.rate && me.photo) {
+      document.getElementById('k-rate').value = me.rate;
+      if(me.hours) document.getElementById('k-hours').value = me.hours;
+      if(me.services) document.getElementById('k-services').value = me.services;
+      showStep(3); 
+    }
   }
 }
 
@@ -702,6 +723,7 @@ window.setupStep = async function(n) {
     if (!kycData.idPhoto) return toast('Upload ID photo', 'error');
     if (!kycData.selfie) return toast('Upload selfie', 'error');
     try {
+      // Yahan par status change hoga aur ye Admin ke paas jayega
       await update(ref(db, 'users/' + me.uid), {
         kycDone: true,
         status: 'kyc_pending',
