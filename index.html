@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="theme-color" content="#ff2e63">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Login / Register — PlayBoy Rentals</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -142,7 +145,6 @@ input::placeholder{color:#555}
       </div>
     </div>
 
-    <!-- Referral code field (only for playboy) -->
     <div class="ref-field hidden" id="refCodeGroup">
       <label>🎁 Have a Referral Code?</label>
       <input type="text" id="su-refcode" placeholder="ABC1234" 
@@ -199,6 +201,20 @@ let loginRole = 'customer';
 let signupRole = 'customer';
 let validReferrer = null;
 
+/* ============================================================
+   🔥 CRITICAL FIX: Clear stale localStorage on page load
+   Only runs if URL has ?logout=1 OR after verifying user
+   ============================================================ */
+(function clearStaleSession() {
+  // If URL has ?logout=1 → force clear
+  const params = new URLSearchParams(location.search);
+  if (params.get('logout') === '1') {
+    localStorage.removeItem('currentUser');
+    // Clean URL
+    history.replaceState({}, '', location.pathname);
+  }
+})();
+
 function toast(msg, type) {
   const t = document.createElement('div');
   t.className = 'toast ' + (type || '');
@@ -207,17 +223,11 @@ function toast(msg, type) {
   setTimeout(() => t.remove(), 2800);
 }
 
-/* ============================================================
-   SHOW FORM — called only after check complete
-   ============================================================ */
 function showForm() {
   document.getElementById('loader').style.display = 'none';
   document.getElementById('mainWrap').style.display = 'flex';
 }
 
-/* ============================================================
-   TAB SWITCH
-   ============================================================ */
 window.switchTab = function(tab) {
   document.getElementById('tabLoginBtn').classList.toggle('active', tab === 'login');
   document.getElementById('tabSignupBtn').classList.toggle('active', tab === 'signup');
@@ -225,9 +235,6 @@ window.switchTab = function(tab) {
   document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
 };
 
-/* ============================================================
-   ROLE PICKER
-   ============================================================ */
 window.pickRole = function(el, ctx) {
   el.parentElement.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
@@ -247,9 +254,6 @@ window.pickRole = function(el, ctx) {
   }
 };
 
-/* ============================================================
-   VALIDATE REFERRAL CODE
-   ============================================================ */
 window.validateRefCode = async function() {
   const code = document.getElementById('su-refcode').value.trim().toUpperCase();
   const statusEl = document.getElementById('refStatus');
@@ -292,9 +296,6 @@ window.validateRefCode = async function() {
   }
 };
 
-/* ============================================================
-   LOGIN
-   ============================================================ */
 window.doLogin = async function() {
   const u = document.getElementById('li-user').value.trim().toLowerCase();
   const p = document.getElementById('li-pass').value;
@@ -324,9 +325,6 @@ window.doLogin = async function() {
   }
 };
 
-/* ============================================================
-   SIGNUP
-   ============================================================ */
 window.doSignup = async function() {
   const name = document.getElementById('su-name').value.trim();
   const username = document.getElementById('su-user').value.trim().toLowerCase();
@@ -430,55 +428,41 @@ window.doSignup = async function() {
 };
 
 /* ============================================================
-   INIT — FIXED: no infinite redirect
+   🔥 FIXED INIT — Guaranteed form show, no loop
    ============================================================ */
 (async function init() {
-  // Small delay to prevent flash
-  await new Promise(r => setTimeout(r, 200));
+  // Always show form first (safety)
+  showForm();
 
   const saved = localStorage.getItem('currentUser');
+  if (!saved) return; // No session → form stays visible
 
-  // No saved user → show login form immediately
-  if (!saved) {
-    showForm();
-    return;
-  }
-
-  // Has saved user → verify ONCE, then redirect or show form
   try {
     const { uid, role } = JSON.parse(saved);
-
     if (!uid || !role) {
       localStorage.removeItem('currentUser');
-      showForm();
       return;
     }
 
+    // Verify user exists + not blocked
     const snap = await get(ref(db, 'users/' + uid));
 
     if (!snap.exists()) {
-      // User deleted → clear and show form
       localStorage.removeItem('currentUser');
-      showForm();
-      return;
+      return; // Form stays
     }
 
     const user = snap.val();
-
     if (user.status === 'blocked') {
       localStorage.removeItem('currentUser');
-      showForm();
       toast('Account blocked', 'error');
       return;
     }
 
-    // Valid user → redirect
-    window.location.href = role === 'playboy' ? 'profile.html' : 'home.html';
-    // Note: don't call showForm() here — redirect will happen
+    // Valid user → redirect (form will be replaced)
+    window.location.replace(role === 'playboy' ? 'profile.html' : 'home.html');
   } catch (e) {
-    // Any error → clear and show form
     localStorage.removeItem('currentUser');
-    showForm();
   }
 })();
 </script>
