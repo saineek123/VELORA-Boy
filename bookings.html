@@ -35,27 +35,32 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 
 .booking-card{background:var(--bg2);border-radius:14px;padding:16px;
   margin-bottom:12px;border-left:4px solid var(--primary)}
-.booking-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.booking-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px}
 .booking-card h4{font-size:15px;margin-bottom:4px}
 .booking-meta{font-size:12px;color:var(--muted);margin-bottom:3px}
 .booking-meta strong{color:#fff}
 .booking-price{color:var(--gold);font-weight:700;font-size:15px;margin-top:6px}
 
 .status{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;
-  text-transform:uppercase;white-space:nowrap}
+  text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .status.pending{background:var(--warning);color:#000}
 .status.accepted{background:var(--success);color:#fff}
 .status.rejected{background:var(--danger);color:#fff}
 .status.completed{background:var(--info);color:#fff}
 
 .booking-actions{display:flex;gap:8px;margin-top:12px}
-.booking-actions button{flex:1;padding:10px;border:none;border-radius:8px;
+.booking-actions button{flex:1;padding:11px;border:none;border-radius:8px;
   font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#fff}
 .btn-success{background:var(--success)}
 .btn-danger{background:var(--danger)}
 .btn-ghost{background:var(--bg3);color:#fff}
 .btn-info{background:var(--info)}
-.btn-rate{background:linear-gradient(135deg,var(--gold),#ff9500);color:#000;font-weight:700}
+.btn-rate{background:linear-gradient(135deg,var(--gold),#ff9500);color:#000;font-weight:700;
+  box-shadow:0 4px 15px rgba(255,215,0,.3)}
+
+.rated-badge{width:100%;text-align:center;padding:11px;
+  background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.3);
+  border-radius:8px;font-size:13px;color:var(--gold);font-weight:600}
 
 .empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
 .empty .big{font-size:52px;display:block;margin-bottom:12px;opacity:.5}
@@ -68,7 +73,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .bottom-nav a .icon{font-size:20px}
 .bottom-nav a.active{color:var(--primary)}
 
-/* MODAL */
+/* REVIEW MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;
   display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
@@ -77,15 +82,15 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
   animation:popIn .3s ease;border:1px solid var(--border)}
 @keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 .modal h3{font-size:18px;margin-bottom:6px;color:var(--primary);text-align:center}
-.modal p{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px}
+.modal .subtitle{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px}
 
-/* STAR RATING */
 .stars-input{display:flex;justify-content:center;gap:8px;margin:20px 0 12px}
-.star{font-size:40px;cursor:pointer;transition:.2s;color:#444;user-select:none;line-height:1}
-.star:hover,.star.active{color:var(--gold);transform:scale(1.15)}
-.star.pulse{animation:pulse .3s}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1.15)}}
-.rating-text{text-align:center;font-size:14px;color:var(--muted);height:20px;
+.star{font-size:40px;cursor:pointer;transition:.2s;color:#444;
+  user-select:none;line-height:1;-webkit-tap-highlight-color:transparent}
+.star:hover,.star.active{color:var(--gold)}
+.star.pulse{animation:pulse .35s}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1.15)}}
+.rating-text{text-align:center;font-size:14px;color:var(--muted);height:22px;
   font-weight:600;margin-bottom:16px}
 
 .form-group{margin-bottom:14px}
@@ -94,6 +99,7 @@ textarea{width:100%;padding:13px 16px;background:var(--bg);
   border:1.5px solid var(--border);color:#fff;border-radius:10px;font-size:15px;
   font-family:inherit;transition:.2s;resize:vertical;min-height:90px}
 textarea:focus{outline:none;border-color:var(--primary)}
+textarea::placeholder{color:#555}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:13px 20px;border:none;border-radius:10px;cursor:pointer;
@@ -137,7 +143,7 @@ textarea:focus{outline:none;border-color:var(--primary)}
 <div class="modal-overlay" id="reviewModal" onclick="if(event.target===this)closeReviewModal()">
   <div class="modal">
     <h3>⭐ Rate Your Experience</h3>
-    <p id="reviewSubtitle">How was your booking?</p>
+    <p class="subtitle" id="reviewSubtitle">How was your booking?</p>
 
     <div class="stars-input" id="starsInput">
       <span class="star" data-star="1" onclick="setRating(1)">★</span>
@@ -229,7 +235,7 @@ function setupNav() {
 }
 
 /* ============================================================
-   LOAD BOOKINGS
+   LOAD BOOKINGS + REVIEWS
    ============================================================ */
 async function loadBookings() {
   const box = document.getElementById('list');
@@ -256,17 +262,16 @@ async function loadBookings() {
       return;
     }
 
-    // Reviews map: bookingId -> review
+    // Map of bookingId -> review (only by me)
     const reviews = rvSnap.exists() ? rvSnap.val() : {};
-    const reviewedBookings = {};
+    const myReviews = {};
     Object.values(reviews).forEach(r => {
-      if (r.customerId === me.uid) reviewedBookings[r.bookingId] = r;
+      if (r.customerId === me.uid) myReviews[r.bookingId] = r;
     });
 
     box.innerHTML = list.map(b => {
       let actions = '';
 
-      // PlayBoy side: accept/reject/complete
       if (me.role === 'playboy' && b.status === 'pending') {
         actions = `<div class="booking-actions">
           <button class="btn-success" onclick="updateBooking('${b.bid}','accepted')">✓ Accept</button>
@@ -279,24 +284,20 @@ async function loadBookings() {
         </div>`;
       }
 
-      // Customer side: rate button when completed
       if (me.role === 'customer') {
         if (b.status === 'accepted') {
           actions = `<div class="booking-actions">
             <button class="btn-ghost" onclick="openChat('${b.playboyId}')">💬 Chat</button>
           </div>`;
         } else if (b.status === 'completed') {
-          if (reviewedBookings[b.bid]) {
-            const r = reviewedBookings[b.bid];
+          if (myReviews[b.bid]) {
+            const r = myReviews[b.bid];
             actions = `<div class="booking-actions">
-              <div style="width:100%;text-align:center;padding:10px;
-                background:rgba(255,215,0,.1);border-radius:8px;font-size:13px">
-                ⭐ You rated ${r.rating}/5
-              </div>
+              <div class="rated-badge">⭐ You rated ${r.rating}/5</div>
             </div>`;
           } else {
             actions = `<div class="booking-actions">
-              <button class="btn-rate" onclick="openReviewModal('${b.bid}','${b.playboyId}','${escapeHtml(b.playboyName)}')">
+              <button class="btn-rate" onclick="openReviewModal('${b.bid}','${b.playboyId}','${escapeHtml(b.playboyName).replace(/'/g,"\\'")}')">
                 ⭐ Rate Now
               </button>
             </div>`;
@@ -340,9 +341,11 @@ window.openChat = function(otherId) {
 window.openReviewModal = function(bid, playboyId, playboyName) {
   currentBooking = { bid, playboyId };
   selectedRating = 0;
-  document.getElementById('reviewSubtitle').textContent = `How was your booking with ${playboyName}?`;
+  document.getElementById('reviewSubtitle').textContent =
+    `How was your booking with ${playboyName}?`;
   document.getElementById('reviewText').value = '';
   document.getElementById('submitReviewBtn').disabled = true;
+  document.getElementById('submitReviewBtn').textContent = 'Submit Review';
   document.getElementById('ratingText').textContent = 'Tap a star to rate';
   updateStars();
   document.getElementById('reviewModal').classList.add('active');
@@ -363,7 +366,7 @@ window.setRating = function(n) {
   const star = document.querySelector(`.star[data-star="${n}"]`);
   if (star) {
     star.classList.add('pulse');
-    setTimeout(() => star.classList.remove('pulse'), 300);
+    setTimeout(() => star.classList.remove('pulse'), 350);
   }
 };
 
@@ -386,7 +389,7 @@ window.submitReview = async function() {
   btn.textContent = '⏳ Submitting...';
 
   try {
-    // 1. Check duplicate review
+    // Duplicate check
     const allRv = await get(ref(db, 'reviews'));
     if (allRv.exists()) {
       const dup = Object.values(allRv.val()).find(r =>
@@ -395,7 +398,7 @@ window.submitReview = async function() {
       if (dup) throw new Error('You already reviewed this booking');
     }
 
-    // 2. Add review
+    // Save review
     const rvRef = push(ref(db, 'reviews'));
     await set(rvRef, {
       rid: rvRef.key,
@@ -408,10 +411,10 @@ window.submitReview = async function() {
       createdAt: Date.now()
     });
 
-    // 3. Mark booking as reviewed
+    // Mark booking reviewed
     await update(ref(db, 'bookings/' + currentBooking.bid), { reviewed: true });
 
-    // 4. Recalculate playboy's avg rating
+    // Recalc playboy rating
     await recalcPlayboyRating(currentBooking.playboyId);
 
     toast('✅ Review submitted!', 'success');
@@ -425,7 +428,7 @@ window.submitReview = async function() {
 };
 
 /* ============================================================
-   RECALCULATE AVG RATING
+   RECALC AVG RATING
    ============================================================ */
 async function recalcPlayboyRating(playboyId) {
   try {
@@ -440,7 +443,7 @@ async function recalcPlayboyRating(playboyId) {
       return;
     }
     const sum = reviews.reduce((a, r) => a + (r.rating || 0), 0);
-    const avg = Math.round((sum / reviews.length) * 10) / 10; // 1 decimal
+    const avg = Math.round((sum / reviews.length) * 10) / 10;
     await update(ref(db, 'users/' + playboyId), {
       avgRating: avg,
       totalReviews: reviews.length
