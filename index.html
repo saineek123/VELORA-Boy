@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#ff2e63">
+<title>Login / Register — PlayBoy Rentals</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --primary:#ff2e63; --primary-dark:#c70039; --gold:#ffd700;
+  --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#2a2a3e; --border:#2a2a3e;
+  --text:#fff; --muted:#888; --success:#00b894; --danger:#e74c3c;
+  --warning:#f39c12; --info:#3498db; --radius:14px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5}
+.loader{position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.spinner{width:44px;height:44px;border:4px solid var(--bg3);border-top-color:var(--primary);
+  border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{color:var(--muted);font-size:13px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 20px;border:none;border-radius:10px;cursor:pointer;
+  font-size:15px;font-weight:600;transition:all .2s;text-decoration:none;
+  width:100%;font-family:inherit;color:#fff}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  box-shadow:0 4px 20px rgba(255,46,99,.35)}
+.btn-ghost{background:var(--bg3);color:#fff}
+.btn-lg{padding:15px 24px;font-size:16px}
+
+.wrap{max-width:440px;margin:0 auto;padding:30px 20px 60px;min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center}
+.logo-box{text-align:center;margin-bottom:30px}
+.logo-icon{font-size:56px;margin-bottom:8px}
+.logo-box h1{font-size:32px;font-weight:800;letter-spacing:-1px}
+.logo-box h1 span{color:var(--gold)}
+.logo-box p{color:var(--muted);font-size:13px;margin-top:4px}
+
+.tabs{display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin-bottom:24px}
+.tabs button{flex:1;padding:12px;border:none;background:transparent;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;border-radius:9px;font-family:inherit;
+  transition:.2s}
+.tabs button.active{background:var(--primary);color:#fff;box-shadow:0 2px 12px rgba(255,46,99,.4)}
+
+.role-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.role-card{padding:16px 10px;background:var(--bg2);border:2px solid var(--border);
+  border-radius:12px;text-align:center;cursor:pointer;transition:all .2s}
+.role-card .icon{font-size:26px;display:block;margin-bottom:4px}
+.role-card .name{font-size:13px;font-weight:600}
+.role-card.active{border-color:var(--primary);background:rgba(255,46,99,.1)}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.form-group label .req{color:var(--primary)}
+input{width:100%;padding:13px 16px;background:var(--bg2);border:1.5px solid var(--border);
+  color:#fff;border-radius:10px;font-size:15px;font-family:inherit;transition:.2s}
+input:focus{outline:none;border-color:var(--primary)}
+input::placeholder{color:#555}
+
+.check-row{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--muted);
+  margin:14px 0}
+.check-row input{width:18px;height:18px;margin-top:2px;flex-shrink:0}
+
+.divider{text-align:center;color:var(--muted);font-size:12px;margin:20px 0}
+.link{color:var(--primary);text-decoration:none;font-weight:600;cursor:pointer}
+
+.hidden{display:none!important}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:var(--bg3);color:#fff;padding:13px 24px;border-radius:30px;
+  font-size:14px;font-weight:500;z-index:9999;max-width:90vw;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);animation:toastIn .3s;
+  border:1px solid var(--border)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--danger)}
+
+.admin-link{text-align:center;margin-top:24px;font-size:11px;color:#444}
+.admin-link a{color:var(--muted);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+  <p>Loading...</p>
+</div>
+
+<div class="wrap" id="mainWrap" style="display:none">
+  <div class="logo-box">
+    <div class="logo-icon">💋</div>
+    <h1>Play<span>Boy</span></h1>
+    <p>Premium Companionship Platform</p>
+  </div>
+
+  <div class="tabs">
+    <button class="active" id="tabLoginBtn" onclick="switchTab('login')">Login</button>
+    <button id="tabSignupBtn" onclick="switchTab('signup')">Register</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginForm">
+    <div class="role-picker">
+      <div class="role-card active" data-role="customer" onclick="pickRole(this,'login')">
+        <span class="icon">👤</span><div class="name">Customer</div>
+      </div>
+      <div class="role-card" data-role="playboy" onclick="pickRole(this,'login')">
+        <span class="icon">👨</span><div class="name">PlayBoy</div>
+      </div>
+    </div>
+    <div class="form-group"><label>Username</label>
+      <input type="text" id="li-user" placeholder="Your username" autocapitalize="off"></div>
+    <div class="form-group"><label>Password</label>
+      <input type="password" id="li-pass" placeholder="Your password"
+             onkeypress="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-primary btn-lg" id="loginBtn" onclick="doLogin()">Login</button>
+  </div>
+
+  <!-- SIGNUP -->
+  <div id="signupForm" class="hidden">
+    <div class="role-picker">
+      <div class="role-card active" data-role="customer" onclick="pickRole(this,'signup')">
+        <span class="icon">👤</span><div class="name">Customer</div>
+      </div>
+      <div class="role-card" data-role="playboy" onclick="pickRole(this,'signup')">
+        <span class="icon">👨</span><div class="name">PlayBoy</div>
+      </div>
+    </div>
+    <div class="form-group"><label>Full Name <span class="req">*</span></label>
+      <input type="text" id="su-name" placeholder="Enter your full name"></div>
+    <div class="form-group"><label>Username <span class="req">*</span></label>
+      <input type="text" id="su-user" placeholder="Unique username" autocapitalize="off"></div>
+    <div class="form-group"><label>Phone Number <span class="req">*</span></label>
+      <input type="tel" id="su-phone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
+    <div class="form-group"><label>Email (optional)</label>
+      <input type="email" id="su-email" placeholder="you@example.com"></div>
+    <div class="form-group"><label>Password <span class="req">*</span></label>
+      <input type="password" id="su-pass" placeholder="Min 6 characters"></div>
+    <div class="form-group"><label>Confirm Password <span class="req">*</span></label>
+      <input type="password" id="su-pass2" placeholder="Re-enter password"></div>
+    <label class="check-row">
+      <input type="checkbox" id="su-age">
+      <span>I confirm I am 18+ and agree to Terms & Privacy</span>
+    </label>
+    <button class="btn btn-primary btn-lg" id="signupBtn" onclick="doSignup()">Create Account</button>
+  </div>
+
+  <div class="admin-link">
+    
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, set, push }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDeXdYVYPzysn55sMNkj-tXYZJzBv7VFD4",
+  authDomain: "bigwin-29967.firebaseapp.com",
+  databaseURL: "https://bigwin-29967-default-rtdb.firebaseio.com",
+  projectId: "bigwin-29967",
+  storageBucket: "bigwin-29967.firebasestorage.app",
+  messagingSenderId: "628333876092",
+  appId: "1:628333876092:web:8e36daac959c0f42154af9",
+  measurementId: "G-654JHXWMEL"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let loginRole = 'customer';
+let signupRole = 'customer';
+
+function toast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
+
+window.switchTab = function(tab) {
+  document.getElementById('tabLoginBtn').classList.toggle('active', tab === 'login');
+  document.getElementById('tabSignupBtn').classList.toggle('active', tab === 'signup');
+  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+};
+
+window.pickRole = function(el, ctx) {
+  el.parentElement.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (ctx === 'login') loginRole = el.dataset.role;
+  else signupRole = el.dataset.role;
+};
+
+window.doLogin = async function() {
+  const u = document.getElementById('li-user').value.trim().toLowerCase();
+  const p = document.getElementById('li-pass').value;
+  if (!u || !p) return toast('Enter credentials', 'error');
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Logging in...';
+  try {
+    const snap = await get(ref(db, 'users'));
+    if (!snap.exists()) throw new Error('No users found');
+    const found = Object.values(snap.val()).find(x =>
+      x.username === u && x.pass === p && x.role === loginRole
+    );
+    if (!found) throw new Error('Invalid credentials');
+    if (found.status === 'blocked') throw new Error('Account blocked. Contact support.');
+
+    localStorage.setItem('currentUser', JSON.stringify({ uid: found.uid, role: found.role }));
+    toast('Welcome ' + found.name, 'success');
+
+    setTimeout(() => {
+      if (found.role === 'playboy') {
+        window.location.href = found.kycDone && found.status === 'active'
+          ? 'profile.html' : 'profile.html';
+      } else {
+        window.location.href = 'home.html';
+      }
+    }, 500);
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Login';
+  }
+};
+
+window.doSignup = async function() {
+  const name = document.getElementById('su-name').value.trim();
+  const username = document.getElementById('su-user').value.trim().toLowerCase();
+  const phone = document.getElementById('su-phone').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pass = document.getElementById('su-pass').value;
+  const pass2 = document.getElementById('su-pass2').value;
+  const age18 = document.getElementById('su-age').checked;
+
+  if (!name || !username || !phone || !pass) return toast('Fill required fields', 'error');
+  if (pass.length < 6) return toast('Password min 6 chars', 'error');
+  if (pass !== pass2) return toast('Passwords do not match', 'error');
+  if (!/^[0-9]{10}$/.test(phone)) return toast('Valid 10-digit phone required', 'error');
+  if (!/^[a-z0-9_]{3,}$/.test(username)) return toast('Username: 3+ chars (a-z 0-9 _)', 'error');
+  if (!age18) return toast('You must be 18+', 'error');
+
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.textContent = 'Creating...';
+  try {
+    const snap = await get(ref(db, 'users'));
+    if (snap.exists()) {
+      const taken = Object.values(snap.val()).some(u => u.username === username);
+      if (taken) throw new Error('Username already taken');
+    }
+    const newRef = push(ref(db, 'users'));
+    const uid = newRef.key;
+    const user = {
+      uid, role: signupRole, name, username, phone, email, pass,
+      bio: '', rate: 0, city: '', hours: '', services: '', photo: '',
+      age: 0, gender: '', height: '', lang: '',
+      kycDone: false, kyc: null, verified: false,
+      status: signupRole === 'playboy' ? 'kyc_pending' : 'active',
+      createdAt: Date.now()
+    };
+    await set(newRef, user);
+    localStorage.setItem('currentUser', JSON.stringify({ uid, role: signupRole }));
+    toast('Account created!', 'success');
+    setTimeout(() => {
+      window.location.href = signupRole === 'playboy' ? 'profile.html' : 'home.html';
+    }, 500);
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+};
+
+// Init — auto-redirect if logged in
+(async function init() {
+  await new Promise(r => setTimeout(r, 300));
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('mainWrap').style.display = 'flex';
+
+  const saved = localStorage.getItem('currentUser');
+  if (saved) {
+    try {
+      const { uid, role } = JSON.parse(saved);
+      const snap = await get(ref(db, 'users/' + uid));
+      if (snap.exists()) {
+        const user = snap.val();
+        if (user.status === 'blocked') {
+          localStorage.removeItem('currentUser');
+          return;
+        }
+        window.location.href = role === 'playboy' ? 'profile.html' : 'home.html';
+      } else {
+        localStorage.removeItem('currentUser');
+      }
+    } catch {}
+  }
+})();
+</script>
+</body>
+</html>
