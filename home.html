@@ -26,79 +26,94 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 
 /* TOP NAV */
 .topnav{position:sticky;top:0;z-index:50;background:var(--bg);
-  padding:15px 20px;display:flex;align-items:center;justify-content:space-between;
+  padding:15px 20px 10px;display:flex;align-items:center;justify-content:space-between;
   padding-top:calc(15px + env(safe-area-inset-top))}
 .topnav .logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
 .topnav .logo span{color:var(--primary);font-family:cursive}
 .topnav .logo-v{color:var(--gold);border:2px solid var(--gold);border-radius:8px;
   width:30px;height:30px;display:flex;align-items:center;justify-content:center;
   font-family:Georgia,serif;font-style:italic;font-size:20px}
-.topnav .filter-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer}
 
-/* SEARCH & FILTER (Toggleable) */
-#searchContainer{padding:0 20px 15px; display:none}
-#searchContainer.active{display:block}
-.search-bar input{width:100%;padding:12px 16px;background:var(--bg2);
-  border:1px solid var(--border);color:#fff;border-radius:12px;font-size:14px;font-family:inherit}
-.search-bar input:focus{outline:none;border-color:var(--gold)}
-.filter-bar{display:flex;gap:8px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+/* SEARCH BAR (Always Visible) */
+.search-wrapper{padding:0 20px 10px;position:relative;z-index:40}
+.search-box{display:flex;align-items:center;background:var(--bg2);
+  border:1.5px solid var(--border);border-radius:12px;padding:0 15px;transition:.2s}
+.search-box:focus-within{border-color:var(--gold);box-shadow:0 0 10px rgba(250,204,21,.15)}
+.search-icon{font-size:16px;color:var(--muted)}
+.search-box input{flex:1;background:transparent;border:none;color:#fff;
+  padding:14px 10px;font-size:15px;font-family:inherit}
+.search-box input:focus{outline:none}
+.clear-btn{background:none;border:none;color:var(--muted);font-size:18px;
+  cursor:pointer;padding:5px}
+
+/* AUTOCOMPLETE DROPDOWN */
+.suggestions{position:absolute;top:100%;left:20px;right:20px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:12px;margin-top:5px;max-height:200px;
+  overflow-y:auto;display:none;box-shadow:0 10px 25px rgba(0,0,0,.6);z-index:50}
+.suggestions.active{display:block}
+.suggestion-item{padding:12px 16px;font-size:14px;color:#fff;cursor:pointer;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.suggestion-item:last-child{border-bottom:none}
+.suggestion-item:hover,.suggestion-item:active{background:var(--bg3);color:var(--gold)}
+
+/* FILTERS */
+.filter-container{padding:0 20px 15px}
+.filter-bar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 .filter-bar::-webkit-scrollbar{display:none}
 .chip{padding:6px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);
-  border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+  border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s}
 .chip.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
 
 /* HERO BANNER */
-.hero-banner{margin:0 20px;border-radius:20px;height:220px;position:relative;
-  background:url('https://plus.unsplash.com/premium_photo-1726862576204-840821ed179a?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D=format&fit=crop') center/cover;
+.hero-banner{margin:0 20px;border-radius:20px;height:200px;position:relative;
+  background:url('https://plus.unsplash.com/premium_photo-1726862576204-840821ed179a?q=80&w=2670&auto=format&fit=crop') center/cover;
   box-shadow:0 10px 30px rgba(0,0,0,0.5);overflow:hidden}
 .hero-banner::before{content:'';position:absolute;inset:0;
   background:linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%)}
 .hero-content{position:relative;z-index:2;padding:20px;height:100%;
   display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
-.hero-content h2{font-size:26px;line-height:1.1;margin:0 0 8px;font-weight:800;color:#fff}
-.hero-content p{font-size:12px;color:#ccc;margin:0 0 15px;line-height:1.4}
-.btn-get-started{background:var(--gold);color:#000;border:none;padding:10px 18px;
-  border-radius:30px;font-weight:700;font-size:14px;cursor:pointer;
-  display:flex;align-items:center;gap:8px;transition:.2s}
+.hero-content h2{font-size:24px;line-height:1.1;margin:0 0 6px;font-weight:800;color:#fff}
+.hero-content p{font-size:12px;color:#ccc;margin:0 0 12px;line-height:1.4}
+.btn-get-started{background:var(--gold);color:#000;border:none;padding:8px 16px;
+  border-radius:30px;font-weight:700;font-size:13px;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:.2s}
 .btn-get-started:active{transform:scale(.95)}
 
-/* CATEGORY GRID */
-.category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
-  padding:20px;margin-bottom:5px}
-.cat-item{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
-.cat-icon{width:65px;height:65px;border-radius:18px;display:flex;
-  align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
-.cat-icon.pink{background:#ff2e63}
-.cat-icon.dark{background:var(--bg2)}
-.cat-item span{font-size:12px;color:#fff;font-weight:500}
-
-/* POPULAR PROFILES */
+/* POPULAR PROFILES - 3 COLUMN GRID */
 .section-header{display:flex;justify-content:space-between;align-items:center;
-  padding:0 20px;margin-bottom:15px}
+  padding:20px 20px 15px;margin-top:10px}
 .section-header h3{margin:0;font-size:18px;font-weight:700;color:#fff}
-.section-header span{font-size:13px;color:var(--muted);cursor:pointer}
-.section-header span:active{color:#fff}
+.section-header span{font-size:13px;color:var(--gold);cursor:pointer;font-weight:600}
+.section-header span:active{opacity:.7}
 
-.profile-scroll{display:flex;overflow-x:auto;gap:12px;padding:0 20px 20px;
-  scrollbar-width:none;align-items:flex-start}
-.profile-scroll::-webkit-scrollbar{display:none}
+.profile-scroll{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;
+  padding:0 15px 20px}
 
-.profile-card{flex:0 0 135px;border-radius:16px;overflow:hidden;background:var(--bg2);
-  cursor:pointer;position:relative;border:1px solid var(--border);transition:.2s}
+.profile-card{border-radius:12px;overflow:hidden;background:var(--bg2);
+  cursor:pointer;position:relative;border:1px solid var(--border);transition:.2s;width:100%}
 .profile-card:active{transform:scale(.97)}
-.profile-card .img-wrap{position:relative;height:170px;width:100%}
+.profile-card .img-wrap{position:relative;height:130px;width:100%}
 .profile-card img{width:100%;height:100%;object-fit:cover}
 .profile-card .no-photo{width:100%;height:100%;display:flex;align-items:center;
-  justify-content:center;font-size:40px;color:#444;background:#222}
-.profile-card .heart-btn{position:absolute;bottom:8px;right:8px;
-  background:var(--primary);color:#fff;border:none;width:26px;height:26px;
+  justify-content:center;font-size:32px;color:#444;background:#222}
+.profile-card .heart-btn{position:absolute;bottom:5px;right:5px;
+  background:var(--primary);color:#fff;border:none;width:22px;height:22px;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:12px;cursor:pointer;padding:0}
-.profile-card .card-info{padding:10px;background:var(--bg2)}
-.profile-card .card-info h4{margin:0 0 3px;font-size:14px;font-weight:600;color:#fff}
-.profile-card .card-info p{margin:0;font-size:11px;color:var(--muted);
-  display:flex;align-items:center;gap:4px}
-.profile-card .card-info p .dot{width:6px;height:6px;background:var(--online);border-radius:50%}
+  font-size:10px;cursor:pointer;padding:0}
+.profile-card .card-info{padding:6px 8px;background:var(--bg2)}
+.profile-card .card-info h4{margin:0 0 2px;font-size:12px;font-weight:600;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-card .card-info p{margin:0;font-size:10px;color:var(--muted);
+  display:flex;align-items:center;gap:3px}
+.profile-card .card-info p .dot{width:5px;height:5px;background:var(--online);border-radius:50%}
+
+/* SEARCH LOADING ANIMATION */
+.search-loading{grid-column:1 / -1;text-align:center;padding:50px 20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+.search-loading .spinner{width:40px;height:40px;border:3px solid var(--bg3);
+  border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:15px}
+.search-loading h4{color:var(--gold);font-weight:700;font-size:16px;margin-bottom:4px}
+.search-loading p{color:var(--muted);font-size:13px}
 
 /* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;
@@ -167,7 +182,8 @@ textarea{resize:vertical;min-height:70px}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--primary)}
 
-.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;width:100%}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;width:100%;
+  grid-column:1 / -1}
 .empty .big{font-size:48px;display:block;margin-bottom:12px;opacity:.5}
 </style>
 </head>
@@ -183,20 +199,28 @@ textarea{resize:vertical;min-height:70px}
   <div class="logo">
     <div class="logo-v">V</div> VELORA-<span>Boy</span>
   </div>
-  <button class="filter-btn" onclick="toggleSearch()">⚙️</button>
 </div>
 
-<!-- SEARCH & FILTER (Hidden by default) -->
-<div id="searchContainer">
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search by name, city..." oninput="applyFilters()">
+<!-- SEARCH BAR (Permanently Visible) -->
+<div class="search-wrapper">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search by city or name..." autocomplete="off" 
+           oninput="handleSearchInput(this.value)" onfocus="if(this.value) showSuggestions(this.value)">
+    <button class="clear-btn" id="clearSearchBtn" onclick="clearSearch()" style="display:none">✕</button>
   </div>
+  <div class="suggestions" id="citySuggestions"></div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-container" id="filterContainer">
   <div class="filter-bar">
     <button class="chip active" data-sort="newest" onclick="setSort(this,'newest')">🆕 Newest</button>
     <button class="chip" data-sort="rate-low" onclick="setSort(this,'rate-low')">💰 Rate ↑</button>
     <button class="chip" data-sort="rate-high" onclick="setSort(this,'rate-high')">💎 Rate ↓</button>
     <button class="chip" data-sort="rating" onclick="setSort(this,'rating')">⭐ Top Rated</button>
     <button class="chip" data-sort="online" onclick="setSort(this,'online')">🟢 Online</button>
+    <button class="chip" data-sort="near-me" onclick="setSort(this,'near-me')">📍 Near Me</button>
   </div>
 </div>
 
@@ -211,35 +235,13 @@ textarea{resize:vertical;min-height:70px}
   </div>
 </div>
 
-<!-- CATEGORIES -->
-<div class="category-grid">
-  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
-    <div class="cat-icon pink">❤️</div>
-    <span>Explore</span>
-  </div>
-  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
-    <div class="cat-icon dark">📸</div>
-    <span>Live</span>
-  </div>
-  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
-    <div class="cat-icon dark">🛡️</div>
-    <span>Private</span>
-  </div>
-  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
-    <div class="cat-icon dark">👑</div>
-    <span>Premium</span>
-  </div>
-</div>
-
 <!-- POPULAR PROFILES -->
 <div class="section-header" id="popularProfiles">
   <h3>Popular Profiles</h3>
-  <span onclick="toggleSearch()">See All →</span>
+  <span onclick="toggleSeeAll()" id="seeAllBtn">See All →</span>
 </div>
 
-<div class="profile-scroll" id="list">
-  <!-- Cards injected here -->
-</div>
+<div class="profile-scroll" id="list"></div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav" id="nav"></div>
@@ -277,6 +279,13 @@ let presenceUnsub = null;
 let reviewsUnsub = null;
 let sortMode = 'newest';
 let searchQuery = '';
+let showAll = false;
+let nearMeCity = null;
+
+// Search variables
+let allCities = new Set();
+let searchTimeout;
+let isSearching = false;
 
 function toast(msg, type) {
   const t = document.createElement('div');
@@ -308,26 +317,12 @@ function formatLastSeen(ts) {
   return 'Offline';
 }
 
-function starsStr(n) {
-  const full = Math.round(n);
-  return '★'.repeat(full) + '☆'.repeat(5 - full);
-}
-
 window.logout = function() {
   if (!confirm('Logout?')) return;
   localStorage.removeItem('currentUser');
   localStorage.clear();
   sessionStorage.clear();
   window.location.replace('index.html?logout=1');
-};
-
-window.toggleSearch = function() {
-  const el = document.getElementById('searchContainer');
-  el.classList.toggle('active');
-  if (el.classList.contains('active')) {
-    document.getElementById('searchInput').focus();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 };
 
 window.scrollToProfiles = function() {
@@ -344,9 +339,8 @@ function setupNav() {
       <span class="icon">💬</span><span>Chat</span></a>
     <a class="nav-item" onclick="location.href='bookings.html'">
       <span class="icon">📋</span><span>My Bookings</span></a>
-     <a class="nav-item" onclick="location.href='support.html'">
+    <a class="nav-item" onclick="location.href='support.html'">
       <span class="icon">🛟</span><span>Support</span></a>
-    
   `;
 }
 
@@ -354,34 +348,172 @@ function startRealtimeListeners() {
   if (usersUnsub) usersUnsub();
   usersUnsub = onValue(ref(db, 'users'), snap => {
     allUsers = snap.exists() ? snap.val() : {};
-    renderList();
+    
+    // Update unique cities for autocomplete
+    allCities.clear();
+    Object.values(allUsers).forEach(u => {
+      if (u.role === 'playboy' && u.status === 'active' && u.kycDone && u.city) {
+        allCities.add(u.city.trim());
+      }
+    });
+
+    if (!isSearching) renderList();
   });
 
   if (presenceUnsub) presenceUnsub();
   presenceUnsub = onValue(ref(db, 'presence'), snap => {
     allPresence = snap.exists() ? snap.val() : {};
-    renderList();
+    if (!isSearching) renderList();
   });
 
   if (reviewsUnsub) reviewsUnsub();
   reviewsUnsub = onValue(ref(db, 'reviews'), snap => {
     allReviews = snap.exists() ? snap.val() : {};
-    renderList();
+    if (!isSearching) renderList();
   });
 }
 
+/* ============================================================
+   SEARCH & AUTOCOMPLETE LOGIC
+   ============================================================ */
+window.handleSearchInput = function(val) {
+  const clearBtn = document.getElementById('clearSearchBtn');
+  if (clearBtn) clearBtn.style.display = val.length > 0 ? 'block' : 'none';
+
+  // Show suggestions
+  if (val.length > 0) {
+    showSuggestions(val);
+  } else {
+    hideSuggestions();
+  }
+
+  // Debounce search (wait 800ms after user stops typing)
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    searchQuery = val.trim().toLowerCase();
+    hideSuggestions();
+    
+    if (searchQuery) {
+      triggerSearchEffect(searchQuery);
+    } else {
+      renderList(); // Reset if empty
+    }
+  }, 800);
+};
+
+function showSuggestions(val) {
+  const box = document.getElementById('citySuggestions');
+  const query = val.toLowerCase();
+  const matches = Array.from(allCities).filter(c => c.toLowerCase().includes(query)).slice(0, 5);
+  
+  if (matches.length > 0) {
+    box.innerHTML = matches.map(c => `
+      <div class="suggestion-item" onclick="selectCity('${c.replace(/'/g, "\\'")}')">
+        <span>📍</span> ${escapeHtml(c)}
+      </div>
+    `).join('');
+    box.classList.add('active');
+  } else {
+    hideSuggestions();
+  }
+}
+
+window.selectCity = function(city) {
+  document.getElementById('searchInput').value = city;
+  document.getElementById('clearSearchBtn').style.display = 'block';
+  hideSuggestions();
+  searchQuery = city.toLowerCase();
+  triggerSearchEffect(city);
+};
+
+function hideSuggestions() {
+  document.getElementById('citySuggestions').classList.remove('active');
+}
+
+window.clearSearch = function() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearSearchBtn').style.display = 'none';
+  searchQuery = '';
+  hideSuggestions();
+  renderList();
+};
+
+function triggerSearchEffect(query) {
+  isSearching = true;
+  const box = document.getElementById('list');
+  
+  // Show "Searching..." popup animation
+  box.innerHTML = `
+    <div class="search-loading">
+      <div class="spinner"></div>
+      <h4>Searching...</h4>
+      <p>Finding perfect matches in "${escapeHtml(query)}"</p>
+    </div>
+  `;
+  
+  // After 1 second, show results
+  setTimeout(() => {
+    isSearching = false;
+    renderList();
+  }, 1000); 
+}
+
 window.setSort = function(btn, mode) {
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  if (mode === 'near-me') {
+    if (nearMeCity) {
+      nearMeCity = null;
+      btn.classList.remove('active');
+      toast('Location filter removed', 'success');
+      renderList();
+    } else {
+      enableNearMe(btn);
+    }
+    return;
+  }
+
+  document.querySelectorAll('.chip').forEach(c => {
+    if (c.dataset.sort !== 'near-me') c.classList.remove('active');
+  });
   btn.classList.add('active');
   sortMode = mode;
   renderList();
 };
 
-window.applyFilters = function() {
-  searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+async function enableNearMe(btn) {
+  if (!navigator.geolocation) return toast('Location not supported', 'error');
+  toast('📍 Getting your location...');
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    try {
+      const { latitude, longitude } = pos.coords;
+      const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+      const data = await res.json();
+      const city = data.city || data.locality || data.principalSubdivision;
+
+      if (!city) return toast('Could not detect your city', 'error');
+
+      nearMeCity = city.toLowerCase();
+      document.getElementById('searchInput').value = city;
+      document.getElementById('clearSearchBtn').style.display = 'block';
+      btn.classList.add('active');
+      toast(`📍 Showing profiles near ${city}`, 'success');
+      triggerSearchEffect(city);
+    } catch (e) {
+      toast('Location detection failed', 'error');
+    }
+  }, (err) => {
+    toast('Location permission denied', 'error');
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+window.toggleSeeAll = function() {
+  showAll = !showAll;
   renderList();
 };
 
+/* ============================================================
+   RENDER LIST
+   ============================================================ */
 function renderList() {
   const box = document.getElementById('list');
   if (!me) return;
@@ -390,6 +522,12 @@ function renderList() {
     u.role === 'playboy' && u.status === 'active' && u.kycDone
   );
 
+  // Location filter
+  if (nearMeCity) {
+    list = list.filter(p => (p.city || '').toLowerCase().includes(nearMeCity));
+  }
+
+  // Search filter
   if (searchQuery) {
     list = list.filter(p =>
       (p.name || '').toLowerCase().includes(searchQuery) ||
@@ -398,6 +536,7 @@ function renderList() {
     );
   }
 
+  // Sort
   list.sort((a, b) => {
     if (sortMode === 'rate-low') return (a.rate || 0) - (b.rate || 0);
     if (sortMode === 'rate-high') return (b.rate || 0) - (a.rate || 0);
@@ -411,8 +550,31 @@ function renderList() {
     return (b.createdAt || 0) - (a.createdAt || 0);
   });
 
+  // See All limit
+  const totalCount = list.length;
+  const hasFilter = !!searchQuery || !!nearMeCity;
+  const displayLimit = 6;
+
+  if (!showAll && !hasFilter && totalCount > displayLimit) {
+    list = list.slice(0, displayLimit);
+  }
+
+  // Update See All button
+  const seeAllBtn = document.getElementById('seeAllBtn');
+  if (seeAllBtn) {
+    if (hasFilter || totalCount <= displayLimit) {
+      seeAllBtn.style.display = 'none';
+    } else {
+      seeAllBtn.style.display = 'inline';
+      seeAllBtn.textContent = showAll ? 'Show Less ↑' : `See All (${totalCount}) →`;
+    }
+  }
+
   if (!list.length) {
-    box.innerHTML = `<div class="empty"><span class="big">🔍</span>No profiles found</div>`;
+    let msg = 'No profiles found';
+    if (nearMeCity) msg = `No profiles in "${nearMeCity}"`;
+    if (searchQuery) msg = `No results for "${searchQuery}"`;
+    box.innerHTML = `<div class="empty"><span class="big">🔍</span>${msg}</div>`;
     return;
   }
 
