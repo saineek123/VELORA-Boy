@@ -55,6 +55,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .btn-danger{background:var(--danger)}
 .btn-ghost{background:var(--bg3);color:#fff}
 .btn-info{background:var(--info)}
+.btn-rate{background:linear-gradient(135deg,var(--gold),#ff9500);color:#000;font-weight:700}
 
 .empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
 .empty .big{font-size:52px;display:block;margin-bottom:12px;opacity:.5}
@@ -67,6 +68,41 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .bottom-nav a .icon{font-size:20px}
 .bottom-nav a.active{color:var(--primary)}
 
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);width:100%;max-width:420px;border-radius:16px;
+  padding:24px 20px;max-height:90vh;overflow-y:auto;
+  animation:popIn .3s ease;border:1px solid var(--border)}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.modal h3{font-size:18px;margin-bottom:6px;color:var(--primary);text-align:center}
+.modal p{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px}
+
+/* STAR RATING */
+.stars-input{display:flex;justify-content:center;gap:8px;margin:20px 0 12px}
+.star{font-size:40px;cursor:pointer;transition:.2s;color:#444;user-select:none;line-height:1}
+.star:hover,.star.active{color:var(--gold);transform:scale(1.15)}
+.star.pulse{animation:pulse .3s}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1.15)}}
+.rating-text{text-align:center;font-size:14px;color:var(--muted);height:20px;
+  font-weight:600;margin-bottom:16px}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500}
+textarea{width:100%;padding:13px 16px;background:var(--bg);
+  border:1.5px solid var(--border);color:#fff;border-radius:10px;font-size:15px;
+  font-family:inherit;transition:.2s;resize:vertical;min-height:90px}
+textarea:focus{outline:none;border-color:var(--primary)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 20px;border:none;border-radius:10px;cursor:pointer;
+  font-size:15px;font-weight:600;transition:all .2s;width:100%;font-family:inherit;color:#fff}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
+.btn-ghost{background:var(--bg3);color:#fff}
+
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
   background:var(--bg3);color:#fff;padding:13px 24px;border-radius:30px;
   font-size:14px;font-weight:500;z-index:9999;max-width:90vw;text-align:center;
@@ -75,6 +111,8 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--danger)}
+
+.hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -95,9 +133,39 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 
 <div class="bottom-nav" id="nav"></div>
 
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="reviewModal" onclick="if(event.target===this)closeReviewModal()">
+  <div class="modal">
+    <h3>⭐ Rate Your Experience</h3>
+    <p id="reviewSubtitle">How was your booking?</p>
+
+    <div class="stars-input" id="starsInput">
+      <span class="star" data-star="1" onclick="setRating(1)">★</span>
+      <span class="star" data-star="2" onclick="setRating(2)">★</span>
+      <span class="star" data-star="3" onclick="setRating(3)">★</span>
+      <span class="star" data-star="4" onclick="setRating(4)">★</span>
+      <span class="star" data-star="5" onclick="setRating(5)">★</span>
+    </div>
+    <div class="rating-text" id="ratingText">Tap a star to rate</div>
+
+    <div class="form-group">
+      <label>Write a review (optional)</label>
+      <textarea id="reviewText" placeholder="Share your experience... (max 500 chars)"
+                maxlength="500"></textarea>
+    </div>
+
+    <button class="btn btn-primary" id="submitReviewBtn" onclick="submitReview()" disabled>
+      Submit Review
+    </button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="closeReviewModal()">
+      Maybe Later
+    </button>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, update }
+import { getDatabase, ref, get, update, push, set }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -115,6 +183,16 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let me = null;
+let currentBooking = null;
+let selectedRating = 0;
+
+const RATING_LABELS = {
+  1: '😞 Poor',
+  2: '😐 Fair',
+  3: '🙂 Good',
+  4: '😊 Very Good',
+  5: '🤩 Excellent'
+};
 
 function toast(msg, type) {
   const t = document.createElement('div');
@@ -150,17 +228,25 @@ function setupNav() {
   `;
 }
 
+/* ============================================================
+   LOAD BOOKINGS
+   ============================================================ */
 async function loadBookings() {
   const box = document.getElementById('list');
   box.innerHTML = '<div class="empty"><div class="spinner" style="margin:0 auto 16px"></div>Loading...</div>';
 
   try {
-    const snap = await get(ref(db, 'bookings'));
-    if (!snap.exists()) {
+    const [bkSnap, rvSnap] = await Promise.all([
+      get(ref(db, 'bookings')),
+      get(ref(db, 'reviews'))
+    ]);
+
+    if (!bkSnap.exists()) {
       box.innerHTML = '<div class="empty"><span class="big">📋</span>No bookings yet</div>';
       return;
     }
-    let list = Object.values(snap.val());
+
+    let list = Object.values(bkSnap.val());
     if (me.role === 'customer') list = list.filter(b => b.customerId === me.uid);
     else list = list.filter(b => b.playboyId === me.uid);
     list.sort((a, b) => b.createdAt - a.createdAt);
@@ -170,8 +256,17 @@ async function loadBookings() {
       return;
     }
 
+    // Reviews map: bookingId -> review
+    const reviews = rvSnap.exists() ? rvSnap.val() : {};
+    const reviewedBookings = {};
+    Object.values(reviews).forEach(r => {
+      if (r.customerId === me.uid) reviewedBookings[r.bookingId] = r;
+    });
+
     box.innerHTML = list.map(b => {
       let actions = '';
+
+      // PlayBoy side: accept/reject/complete
       if (me.role === 'playboy' && b.status === 'pending') {
         actions = `<div class="booking-actions">
           <button class="btn-success" onclick="updateBooking('${b.bid}','accepted')">✓ Accept</button>
@@ -182,11 +277,33 @@ async function loadBookings() {
           <button class="btn-info" onclick="updateBooking('${b.bid}','completed')">Mark Completed</button>
           <button class="btn-ghost" onclick="openChat('${b.customerId}')">💬 Chat</button>
         </div>`;
-      } else if (me.role === 'customer' && b.status === 'accepted') {
-        actions = `<div class="booking-actions">
-          <button class="btn-ghost" onclick="openChat('${b.playboyId}')">💬 Chat</button>
-        </div>`;
       }
+
+      // Customer side: rate button when completed
+      if (me.role === 'customer') {
+        if (b.status === 'accepted') {
+          actions = `<div class="booking-actions">
+            <button class="btn-ghost" onclick="openChat('${b.playboyId}')">💬 Chat</button>
+          </div>`;
+        } else if (b.status === 'completed') {
+          if (reviewedBookings[b.bid]) {
+            const r = reviewedBookings[b.bid];
+            actions = `<div class="booking-actions">
+              <div style="width:100%;text-align:center;padding:10px;
+                background:rgba(255,215,0,.1);border-radius:8px;font-size:13px">
+                ⭐ You rated ${r.rating}/5
+              </div>
+            </div>`;
+          } else {
+            actions = `<div class="booking-actions">
+              <button class="btn-rate" onclick="openReviewModal('${b.bid}','${b.playboyId}','${escapeHtml(b.playboyName)}')">
+                ⭐ Rate Now
+              </button>
+            </div>`;
+          }
+        }
+      }
+
       return `<div class="booking-card">
         <div class="booking-row">
           <div>
@@ -217,6 +334,125 @@ window.openChat = function(otherId) {
   window.location.href = 'chat.html?with=' + otherId;
 };
 
+/* ============================================================
+   REVIEW MODAL
+   ============================================================ */
+window.openReviewModal = function(bid, playboyId, playboyName) {
+  currentBooking = { bid, playboyId };
+  selectedRating = 0;
+  document.getElementById('reviewSubtitle').textContent = `How was your booking with ${playboyName}?`;
+  document.getElementById('reviewText').value = '';
+  document.getElementById('submitReviewBtn').disabled = true;
+  document.getElementById('ratingText').textContent = 'Tap a star to rate';
+  updateStars();
+  document.getElementById('reviewModal').classList.add('active');
+};
+
+window.closeReviewModal = function() {
+  document.getElementById('reviewModal').classList.remove('active');
+  currentBooking = null;
+  selectedRating = 0;
+};
+
+window.setRating = function(n) {
+  selectedRating = n;
+  updateStars();
+  document.getElementById('ratingText').textContent = RATING_LABELS[n] || '';
+  document.getElementById('submitReviewBtn').disabled = false;
+
+  const star = document.querySelector(`.star[data-star="${n}"]`);
+  if (star) {
+    star.classList.add('pulse');
+    setTimeout(() => star.classList.remove('pulse'), 300);
+  }
+};
+
+function updateStars() {
+  document.querySelectorAll('.star').forEach(s => {
+    const n = +s.dataset.star;
+    s.classList.toggle('active', n <= selectedRating);
+  });
+}
+
+/* ============================================================
+   SUBMIT REVIEW
+   ============================================================ */
+window.submitReview = async function() {
+  if (!currentBooking || !selectedRating) return;
+  const btn = document.getElementById('submitReviewBtn');
+  const text = document.getElementById('reviewText').value.trim();
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting...';
+
+  try {
+    // 1. Check duplicate review
+    const allRv = await get(ref(db, 'reviews'));
+    if (allRv.exists()) {
+      const dup = Object.values(allRv.val()).find(r =>
+        r.bookingId === currentBooking.bid && r.customerId === me.uid
+      );
+      if (dup) throw new Error('You already reviewed this booking');
+    }
+
+    // 2. Add review
+    const rvRef = push(ref(db, 'reviews'));
+    await set(rvRef, {
+      rid: rvRef.key,
+      playboyId: currentBooking.playboyId,
+      customerId: me.uid,
+      customerName: me.name,
+      bookingId: currentBooking.bid,
+      rating: selectedRating,
+      text: text || '',
+      createdAt: Date.now()
+    });
+
+    // 3. Mark booking as reviewed
+    await update(ref(db, 'bookings/' + currentBooking.bid), { reviewed: true });
+
+    // 4. Recalculate playboy's avg rating
+    await recalcPlayboyRating(currentBooking.playboyId);
+
+    toast('✅ Review submitted!', 'success');
+    closeReviewModal();
+    loadBookings();
+  } catch (e) {
+    toast(e.message || 'Failed to submit', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit Review';
+  }
+};
+
+/* ============================================================
+   RECALCULATE AVG RATING
+   ============================================================ */
+async function recalcPlayboyRating(playboyId) {
+  try {
+    const snap = await get(ref(db, 'reviews'));
+    if (!snap.exists()) {
+      await update(ref(db, 'users/' + playboyId), { avgRating: 0, totalReviews: 0 });
+      return;
+    }
+    const reviews = Object.values(snap.val()).filter(r => r.playboyId === playboyId);
+    if (!reviews.length) {
+      await update(ref(db, 'users/' + playboyId), { avgRating: 0, totalReviews: 0 });
+      return;
+    }
+    const sum = reviews.reduce((a, r) => a + (r.rating || 0), 0);
+    const avg = Math.round((sum / reviews.length) * 10) / 10; // 1 decimal
+    await update(ref(db, 'users/' + playboyId), {
+      avgRating: avg,
+      totalReviews: reviews.length
+    });
+  } catch (e) {
+    console.error('Rating recalc failed', e);
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
 (async function init() {
   await new Promise(r => setTimeout(r, 300));
   document.getElementById('loader').style.display = 'none';
