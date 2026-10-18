@@ -51,6 +51,12 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .profile-head .username{color:var(--muted);font-size:13px}
 .profile-head .rate-tag{color:var(--gold);font-weight:700;font-size:16px;margin-top:8px}
 
+.rating-line{display:flex;align-items:center;gap:6px;margin-top:8px;
+  background:rgba(255,215,0,.1);padding:6px 14px;border-radius:20px}
+.rating-line .stars{color:var(--gold);font-size:16px;letter-spacing:1px}
+.rating-line .rating-num{color:var(--gold);font-weight:700;font-size:15px}
+.rating-line .rating-count{color:var(--muted);font-size:12px}
+
 .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;
   margin-top:10px;text-transform:uppercase;letter-spacing:.5px}
 .badge.verified{background:var(--success);color:#fff}
@@ -95,7 +101,6 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 .upload-box p{font-size:13px;color:var(--muted)}
 .upload-box .file-name{color:var(--success);font-size:13px;font-weight:600;margin-top:6px}
 
-/* Photo preview in edit mode */
 .photo-edit-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;
   background:var(--bg2);padding:14px;border-radius:12px;border:1px solid var(--border)}
 .photo-edit-preview{width:64px;height:64px;border-radius:50%;
@@ -143,14 +148,11 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 </div>
 
 <div class="container">
-  <!-- LIVE PROFILE CARD (always shown, real-time) -->
   <div id="profileBox"></div>
 
-  <!-- EDIT MODE (after KYC done & active) -->
   <div id="editMode" class="hidden">
     <h2 class="section-title">Edit <span>Details</span></h2>
 
-    <!-- PHOTO EDIT -->
     <div class="photo-edit-row">
       <div class="photo-edit-preview" id="editPhotoPreview">👨</div>
       <div class="photo-edit-info">
@@ -184,7 +186,6 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     </button>
   </div>
 
-  <!-- KYC SETUP MODE (not yet submitted) -->
   <div id="setupMode" class="hidden">
     <div class="steps-bar">
       <div class="step active" id="kstep1"></div>
@@ -287,13 +288,10 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let me = null;
-let meUnsub = null;              // realtime listener
-let editingPhoto = '';           // temp photo while editing
+let meUnsub = null;
+let editingPhoto = '';
 const kycData = { photo: '', idPhoto: '', selfie: '' };
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
 function toast(msg, type) {
   const t = document.createElement('div');
   t.className = 'toast ' + (type || '');
@@ -310,6 +308,11 @@ function escapeHtml(s) {
 function avatarHTML(u) {
   if (u && u.photo) return `<img src="${u.photo}">`;
   return '👨';
+}
+
+function starsStr(n) {
+  const full = Math.round(n);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
 }
 
 function readImage(file, maxKB = 600) {
@@ -344,9 +347,6 @@ function readImage(file, maxKB = 600) {
   });
 }
 
-/* ============================================================
-   LOGOUT
-   ============================================================ */
 window.logout = function() {
   if (!confirm('Logout?')) return;
   if (me) {
@@ -357,7 +357,7 @@ window.logout = function() {
 };
 
 /* ============================================================
-   RENDER PROFILE (called on every realtime update)
+   RENDER PROFILE
    ============================================================ */
 function renderProfile() {
   const box = document.getElementById('profileBox');
@@ -371,6 +371,20 @@ function renderProfile() {
   else if (me.status === 'rejected') badge = '<div class="badge rejected">❌ KYC Rejected</div>';
   else if (me.status === 'blocked') badge = '<div class="badge blocked">🚫 Blocked</div>';
 
+  // Rating line
+  let ratingLine = '';
+  if (me.avgRating > 0) {
+    ratingLine = `<div class="rating-line">
+      <span class="stars">${starsStr(me.avgRating)}</span>
+      <span class="rating-num">${me.avgRating}</span>
+      <span class="rating-count">(${me.totalReviews || 0} reviews)</span>
+    </div>`;
+  } else {
+    ratingLine = `<div style="color:var(--muted);font-size:12px;margin-top:8px">
+      No reviews yet — complete bookings to get rated
+    </div>`;
+  }
+
   box.innerHTML = `
     <div class="profile-head">
       <div class="profile-avatar">
@@ -380,6 +394,7 @@ function renderProfile() {
       <h2>${escapeHtml(me.name)}</h2>
       <div class="username">@${escapeHtml(me.username)}</div>
       ${me.rate ? `<div class="rate-tag">₹${me.rate}/hour</div>` : ''}
+      ${ratingLine}
       <div style="color:var(--muted);font-size:12px;margin-top:6px">
         📍 ${escapeHtml(me.city || 'N/A')} · 📞 ${escapeHtml(me.phone || 'N/A')}
       </div>
@@ -389,12 +404,10 @@ function renderProfile() {
     </div>
   `;
 
-  // Render mode selection
   if (me.kycDone && me.status === 'active') {
     editMode.classList.remove('hidden');
     setupMode.classList.add('hidden');
 
-    // Only fill inputs if not focused (avoid disrupting typing)
     const setIfNotFocused = (id, val) => {
       const el = document.getElementById(id);
       if (el && document.activeElement !== el) el.value = val ?? '';
@@ -405,7 +418,6 @@ function renderProfile() {
     setIfNotFocused('e-hours', me.hours || '');
     setIfNotFocused('e-services', me.services || '');
 
-    // Update photo preview
     const preview = document.getElementById('editPhotoPreview');
     if (preview) {
       preview.innerHTML = editingPhoto
@@ -416,7 +428,6 @@ function renderProfile() {
     editMode.classList.add('hidden');
     setupMode.classList.add('hidden');
   } else if (me.status === 'rejected') {
-    // Show rejection reason + allow re-submit
     editMode.classList.add('hidden');
     setupMode.classList.remove('hidden');
     if (me.rejectionReason) {
@@ -428,7 +439,6 @@ function renderProfile() {
       </div>`;
     }
   } else {
-    // Not KYC done yet — show setup
     editMode.classList.add('hidden');
     setupMode.classList.remove('hidden');
     if (me.age && !document.getElementById('k-age').value)
@@ -444,11 +454,7 @@ function renderProfile() {
   }
 }
 
-/* ============================================================
-   LIVE PREVIEW on typing
-   ============================================================ */
 window.previewUpdate = function() {
-  // Update profile card instantly as user types
   if (!me) return;
   const tempMe = {
     ...me,
@@ -458,16 +464,12 @@ window.previewUpdate = function() {
     hours: document.getElementById('e-hours').value.trim(),
     services: document.getElementById('e-services').value.trim(),
   };
-  const box = document.getElementById('profileBox');
   const oldMe = me;
   me = tempMe;
   renderProfile();
   me = oldMe;
 };
 
-/* ============================================================
-   EDIT PHOTO (after KYC done)
-   ============================================================ */
 window.handleEditPhoto = async function(inp) {
   const f = inp.files[0];
   if (!f) return;
@@ -481,9 +483,6 @@ window.handleEditPhoto = async function(inp) {
   }
 };
 
-/* ============================================================
-   SAVE PROFILE
-   ============================================================ */
 window.saveProfile = async function() {
   const btn = document.getElementById('saveBtn');
   const rate = +document.getElementById('e-rate').value;
@@ -517,9 +516,6 @@ window.saveProfile = async function() {
   }
 };
 
-/* ============================================================
-   KYC SETUP STEPS
-   ============================================================ */
 window.showStep = function(n) {
   document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
   document.getElementById('ks' + n).classList.add('active');
@@ -608,16 +604,12 @@ window.setupStep = async function(n) {
         }
       });
       toast('✅ KYC submitted! Waiting for admin approval', 'success');
-      // No reload — realtime listener will update UI
     } catch (e) {
       toast('Submit failed: ' + e.message, 'error');
     }
   }
 };
 
-/* ============================================================
-   NAV
-   ============================================================ */
 function setupNav() {
   document.getElementById('nav').innerHTML = `
     <a class="active" onclick="location.href='profile.html'">
@@ -632,7 +624,7 @@ function setupNav() {
 }
 
 /* ============================================================
-   INIT — setup realtime listener
+   INIT
    ============================================================ */
 (async function init() {
   await new Promise(r => setTimeout(r, 300));
@@ -649,7 +641,6 @@ function setupNav() {
     return;
   }
 
-  // Initial fetch
   try {
     const snap = await get(ref(db, 'users/' + uid));
     if (!snap.exists()) {
@@ -668,15 +659,12 @@ function setupNav() {
     setupNav();
     renderProfile();
 
-    // 🔥 REALTIME LISTENER — any change on Firebase → instant update on UI
     if (meUnsub) meUnsub();
     meUnsub = onValue(ref(db, 'users/' + uid), snap => {
       if (!snap.exists()) return;
       const prevStatus = me?.status;
-      const prevVerified = me?.verified;
       me = snap.val();
 
-      // If status changed (approved/rejected by admin) → show toast
       if (prevStatus !== me.status) {
         if (me.status === 'active' && me.verified) toast('🎉 Admin approved your profile!', 'success');
         else if (me.status === 'rejected') toast('❌ Admin rejected KYC', 'error');
