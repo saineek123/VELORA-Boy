@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#ff2e63">
+<title>My Referrals — PlayBoy Rentals</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --primary:#ff2e63; --primary-dark:#c70039; --gold:#ffd700;
+  --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#2a2a3e; --border:#2a2a3e;
+  --text:#fff; --muted:#888; --success:#00b894; --danger:#e74c3c;
+  --warning:#f39c12; --radius:14px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+.loader{position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.spinner{width:44px;height:44px;border:4px solid var(--bg3);border-top-color:var(--primary);
+  border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{color:var(--muted);font-size:13px}
+
+.topnav{position:sticky;top:0;z-index:50;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  padding-top:calc(14px + env(safe-area-inset-top))}
+.topnav h1{font-size:18px;font-weight:700}
+.topnav h1 span{color:var(--gold)}
+.topnav button{background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer}
+
+.container{max-width:640px;margin:0 auto;padding:20px 16px}
+.section-title{font-size:18px;font-weight:700;margin-bottom:14px}
+.section-title span{color:var(--primary)}
+
+/* MAIN REFERRAL CARD */
+.referral-hero{background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,46,99,.15));
+  border:2px solid var(--gold);border-radius:20px;padding:24px 20px;
+  text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
+.referral-hero::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;
+  height:200%;background:radial-gradient(circle,rgba(255,215,0,.15),transparent 70%);
+  animation:rotate 8s linear infinite;pointer-events:none}
+@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.referral-hero .hero-icon{font-size:52px;margin-bottom:10px;position:relative}
+.referral-hero h2{font-size:22px;font-weight:800;margin-bottom:6px;position:relative;
+  color:var(--gold)}
+.referral-hero p{font-size:13px;color:var(--muted);margin-bottom:20px;position:relative;line-height:1.4}
+
+.code-box{background:var(--bg);border:2px dashed var(--gold);border-radius:14px;
+  padding:16px;margin-bottom:14px;position:relative}
+.code-box .label{font-size:10px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:8px}
+.code-box .code{font-family:'Courier New',monospace;font-size:26px;font-weight:900;
+  color:var(--gold);letter-spacing:5px;margin-bottom:12px;word-break:break-all}
+.code-box .copy-btn{background:var(--gold);color:#000;border:none;padding:12px 24px;
+  border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px;
+  width:100%;transition:.2s}
+.code-box .copy-btn:active{transform:scale(.96)}
+.code-box .copy-btn.copied{background:var(--success);color:#fff}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+  padding:16px;text-align:center}
+.stat-box .num{font-size:26px;font-weight:800;color:var(--primary);line-height:1}
+.stat-box .lbl{font-size:10px;color:var(--muted);margin-top:6px;
+  text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.stat-box.gold .num{color:var(--gold)}
+.stat-box.green .num{color:var(--success)}
+
+/* SHARE BUTTONS */
+.share-section{background:var(--bg2);border-radius:16px;padding:18px;
+  border:1px solid var(--border);margin-bottom:20px}
+.share-section h3{font-size:15px;margin-bottom:14px;text-align:center}
+.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.share-btn{border:none;padding:14px 10px;border-radius:12px;font-weight:600;
+  cursor:pointer;font-family:inherit;font-size:13px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;transition:.2s;color:#fff}
+.share-btn:active{transform:scale(.95)}
+.share-btn .icon{font-size:24px}
+.share-btn.wa{background:#25d366}
+.share-btn.telegram{background:#0088cc}
+.share-btn.copy{background:var(--bg3);border:1px solid var(--border)}
+.share-btn.sms{background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
+
+/* REFERRED LIST */
+.referred-list{background:var(--bg2);border-radius:16px;padding:16px;
+  border:1px solid var(--border)}
+.referred-list h3{font-size:15px;margin-bottom:14px}
+.referred-item{display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--border)}
+.referred-item:last-child{border-bottom:none}
+.referred-av{width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.referred-info{flex:1;min-width:0}
+.referred-info h4{font-size:14px;margin-bottom:2px}
+.referred-info p{font-size:11px;color:var(--muted)}
+.referred-bonus{color:var(--gold);font-weight:700;font-size:13px;white-space:nowrap}
+
+.empty{text-align:center;padding:30px 20px;color:#555;font-size:13px}
+.empty .big{font-size:40px;display:block;margin-bottom:8px;opacity:.5}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);
+  border-top:1px solid var(--border);display:flex;
+  padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:40}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  text-decoration:none;color:var(--muted);font-size:11px;padding:6px 0;cursor:pointer}
+.bottom-nav a .icon{font-size:20px}
+.bottom-nav a.active{color:var(--primary)}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--bg3);color:#fff;padding:13px 24px;border-radius:30px;
+  font-size:14px;font-weight:500;z-index:9999;max-width:90vw;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);animation:toastIn .3s;
+  border:1px solid var(--border)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--danger)}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+  <p>Loading...</p>
+</div>
+
+<div class="topnav">
+  <button onclick="location.href='profile.html'">←</button>
+  <h1>My <span>Referrals</span></h1>
+  <div style="width:36px"></div>
+</div>
+
+<div class="container">
+  <!-- HERO -->
+  <div class="referral-hero">
+    <div class="hero-icon">🎁</div>
+    <h2>Earn ₹100 Per Referral</h2>
+    <p>Share your code with new playboys — you both get ₹100 wallet bonus!</p>
+
+    <div class="code-box">
+      <div class="label">Your Unique Code</div>
+      <div class="code" id="refCode">LOADING</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">📋 Copy Code</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="num" id="totalReferred">0</div>
+      <div class="lbl">Referred</div>
+    </div>
+    <div class="stat-box gold">
+      <div class="num" id="totalEarned">₹0</div>
+      <div class="lbl">Earned</div>
+    </div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="share-section">
+    <h3>📤 Share Your Code</h3>
+    <div class="share-grid">
+      <button class="share-btn wa" onclick="shareWhatsApp()">
+        <span class="icon">💬</span>
+        WhatsApp
+      </button>
+      <button class="share-btn telegram" onclick="shareTelegram()">
+        <span class="icon">✈️</span>
+        Telegram
+      </button>
+      <button class="share-btn copy" onclick="shareLink()">
+        <span class="icon">🔗</span>
+        Copy Link
+      </button>
+      <button class="share-btn sms" onclick="shareSMS()">
+        <span class="icon">📱</span>
+        SMS
+      </button>
+    </div>
+  </div>
+
+  <!-- REFERRED USERS -->
+  <div class="referred-list">
+    <h3>👥 People You Referred</h3>
+    <div id="referredList">
+      <div class="empty">
+        <span class="big">👥</span>
+        No referrals yet<br>
+        <small>Share your code to start earning</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav" id="nav"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, update }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDeXdYVYPzysn55sMNkj-tXYZJzBv7VFD4",
+  authDomain: "bigwin-29967.firebaseapp.com",
+  databaseURL: "https://bigwin-29967-default-rtdb.firebaseio.com",
+  projectId: "bigwin-29967",
+  storageBucket: "bigwin-29967.firebasestorage.app",
+  messagingSenderId: "628333876092",
+  appId: "1:628333876092:web:8e36daac959c0f42154af9",
+  measurementId: "G-654JHXWMEL"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let me = null;
+
+function toast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function getBaseUrl() {
+  return window.location.href.split('/').slice(0, -1).join('/');
+}
+
+/* ============================================================
+   GENERATE REFERRAL CODE
+   ============================================================ */
+async function ensureReferralCode() {
+  if (!me) return;
+  if (me.referralCode) {
+    document.getElementById('refCode').textContent = me.referralCode;
+    return;
+  }
+
+  const base = me.username.substring(0, 3).toUpperCase();
+  let code = base + Math.floor(1000 + Math.random() * 9000);
+
+  try {
+    const snap = await get(ref(db, 'users'));
+    if (snap.exists()) {
+      const used = new Set(Object.values(snap.val()).map(u => u.referralCode).filter(Boolean));
+      let tries = 0;
+      while (used.has(code) && tries < 10) {
+        code = base + Math.floor(1000 + Math.random() * 9000);
+        tries++;
+      }
+    }
+    await update(ref(db, 'users/' + me.uid), { referralCode: code });
+    me.referralCode = code;
+    document.getElementById('refCode').textContent = code;
+  } catch (e) {
+    toast('Code generation failed', 'error');
+    document.getElementById('refCode').textContent = 'ERROR';
+  }
+}
+
+/* ============================================================
+   LOAD STATS + REFERRED LIST
+   ============================================================ */
+async function loadStats() {
+  try {
+    const snap = await get(ref(db, 'referrals'));
+    if (!snap.exists()) return;
+
+    const allRefs = Object.values(snap.val()).filter(r => r.referrerId === me.uid);
+
+    document.getElementById('totalReferred').textContent = allRefs.length;
+    document.getElementById('totalEarned').textContent = '₹' + allRefs.reduce((s, r) => s + (r.bonus || 0), 0);
+
+    if (!allRefs.length) return;
+
+    allRefs.sort((a, b) => b.createdAt - a.createdAt);
+    document.getElementById('referredList').innerHTML = allRefs.map(r => `
+      <div class="referred-item">
+        <div class="referred-av">👨</div>
+        <div class="referred-info">
+          <h4>${escapeHtml(r.referredName)}</h4>
+          <p>${new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+        </div>
+        <div class="referred-bonus">+₹${r.bonus || 100}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/* ============================================================
+   SHARE
+   ============================================================ */
+window.copyCode = function() {
+  if (!me?.referralCode) return toast('Code not ready', 'error');
+  navigator.clipboard.writeText(me.referralCode).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = '📋 Copy Code';
+    }, 2000);
+    toast('Code copied!', 'success');
+  }).catch(() => toast('Copy failed', 'error'));
+};
+
+window.shareWhatsApp = function() {
+  if (!me?.referralCode) return toast('Code not ready', 'error');
+  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
+  const text = `🎁 Join PlayBoy Rentals & get ₹100 bonus!\n\n` +
+               `Use my code: *${me.referralCode}*\n\n` +
+               `Sign up here: ${url}\n\n` +
+               `You'll get ₹100 in your wallet, and I'll get ₹100 too! 💰`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+};
+
+window.shareTelegram = function() {
+  if (!me?.referralCode) return toast('Code not ready', 'error');
+  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
+  const text = `🎁 Join PlayBoy Rentals & get ₹100 bonus!\n\n` +
+               `Use my code: ${me.referralCode}\n\n` +
+               `${url}`;
+  window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank');
+};
+
+window.shareLink = function() {
+  if (!me?.referralCode) return toast('Code not ready', 'error');
+  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
+  navigator.clipboard.writeText(url).then(() => {
+    toast('🔗 Link copied!', 'success');
+  }).catch(() => toast('Copy failed', 'error'));
+};
+
+window.shareSMS = function() {
+  if (!me?.referralCode) return toast('Code not ready', 'error');
+  const url = getBaseUrl() + '/index.html?ref=' + me.referralCode;
+  const text = `Join PlayBoy Rentals! Use my code ${me.referralCode} for ₹100 bonus: ${url}`;
+  window.location.href = 'sms:?body=' + encodeURIComponent(text);
+};
+
+/* ============================================================
+   NAV
+   ============================================================ */
+function setupNav() {
+  document.getElementById('nav').innerHTML = `
+    <a onclick="location.href='profile.html'">
+      <span class="icon">👨</span><span>Profile</span></a>
+    <a class="active">
+      <span class="icon">🎁</span><span>Referral</span></a>
+    <a onclick="location.href='chat.html'">
+      <span class="icon">💬</span><span>Chat</span></a>
+    <a onclick="location.href='bookings.html'">
+      <span class="icon">📋</span><span>Bookings</span></a>
+  `;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init() {
+  await new Promise(r => setTimeout(r, 300));
+  document.getElementById('loader').style.display = 'none';
+
+  const saved = localStorage.getItem('currentUser');
+  if (!saved) { window.location.replace('index.html'); return; }
+
+  try {
+    const { uid } = JSON.parse(saved);
+    const snap = await get(ref(db, 'users/' + uid));
+    if (!snap.exists()) {
+      localStorage.removeItem('currentUser');
+      window.location.replace('index.html');
+      return;
+    }
+    me = snap.val();
+    if (me.role !== 'playboy') {
+      window.location.replace('home.html');
+      return;
+    }
+    if (me.status === 'blocked') {
+      localStorage.removeItem('currentUser');
+      window.location.replace('index.html');
+      return;
+    }
+    if (me.status !== 'active' || !me.verified) {
+      window.location.replace('profile.html');
+      return;
+    }
+
+    setupNav();
+    await ensureReferralCode();
+    await loadStats();
+  } catch (e) {
+    window.location.replace('index.html');
+  }
+})();
+</script>
+</body>
+</html>
