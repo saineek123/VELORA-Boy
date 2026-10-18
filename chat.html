@@ -10,6 +10,7 @@
   --primary:#ff2e63; --primary-dark:#c70039; --gold:#ffd700;
   --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#2a2a3e; --border:#2a2a3e;
   --text:#fff; --muted:#888; --success:#00b894; --danger:#e74c3c;
+  --online:#25d366; --tick-read:#53bdeb;
 }
 html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
@@ -22,42 +23,98 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 
 .topnav{position:sticky;top:0;z-index:50;
   background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-  padding-top:calc(14px + env(safe-area-inset-top))}
-.topnav h1{font-size:18px;font-weight:700}
+  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  padding-top:calc(12px + env(safe-area-inset-top));gap:10px}
+.topnav h1{font-size:16px;font-weight:700;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .topnav h1 span{color:var(--gold)}
 .topnav button{background:rgba(255,255,255,.2);border:none;color:#fff;
-  width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer}
+  width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0}
 
 .container{max-width:640px;margin:0 auto;padding:20px 16px;
   padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 
+/* CHAT LIST ITEM */
 .chat-list-item{display:flex;gap:12px;align-items:center;padding:14px;
   background:var(--bg2);border-radius:12px;margin-bottom:10px;
   cursor:pointer;border:1px solid var(--border);transition:.2s}
 .chat-list-item:hover{border-color:var(--primary)}
-.chat-av{width:50px;height:50px;border-radius:50%;background:var(--bg3);
-  display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;
+.chat-av-wrap{position:relative;flex-shrink:0}
+.chat-av{width:52px;height:52px;border-radius:50%;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
   overflow:hidden}
 .chat-av img{width:100%;height:100%;object-fit:cover}
+.online-dot{position:absolute;bottom:1px;right:1px;width:13px;height:13px;
+  border-radius:50%;background:var(--online);border:2.5px solid var(--bg2)}
 .chat-info{flex:1;min-width:0}
-.chat-info h4{font-size:15px;margin-bottom:2px}
+.chat-info .row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.chat-info h4{font-size:15px;font-weight:600}
+.chat-info .time-small{font-size:11px;color:var(--muted)}
+.chat-info .row-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .chat-info p{font-size:12px;color:var(--muted);overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
+  text-overflow:ellipsis;white-space:nowrap;flex:1}
+.unread-badge{background:var(--online);color:#fff;font-size:10px;font-weight:700;
+  padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;flex-shrink:0}
 
-.chat-window{display:flex;flex-direction:column;height:calc(100vh - 64px)}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;
-  gap:8px;max-width:640px;margin:0 auto;width:100%}
-.msg{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;word-wrap:break-word}
-.msg.me{background:var(--primary);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.msg.them{background:var(--bg3);color:#fff;align-self:flex-start;border-bottom-left-radius:4px}
-.chat-input-bar{display:flex;gap:8px;padding:12px;background:var(--bg2);
-  border-top:1px solid var(--border);max-width:640px;margin:0 auto;width:100%}
-.chat-input-bar input{margin:0;padding:13px 16px;flex:1;background:var(--bg);
-  border:1.5px solid var(--border);color:#fff;border-radius:24px;font-size:15px;font-family:inherit}
+/* CHAT WINDOW */
+.chat-window{display:flex;flex-direction:column;height:calc(100vh - 60px)}
+.chat-header-user{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.chat-header-av{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0}
+.chat-header-av img{width:100%;height:100%;object-fit:cover}
+.chat-header-info{flex:1;min-width:0}
+.chat-header-info h1{font-size:15px;font-weight:700;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chat-header-status{font-size:11px;color:rgba(255,255,255,.85);margin-top:1px}
+.chat-header-status.online{color:#b3ffd9;font-weight:600}
+
+.chat-messages{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;
+  gap:6px;max-width:640px;margin:0 auto;width:100%;
+  background-image:radial-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size:20px 20px}
+
+/* DATE SEPARATOR */
+.date-sep{text-align:center;margin:12px 0 6px;color:var(--muted);font-size:11px;
+  position:relative}
+.date-sep span{background:var(--bg3);padding:4px 12px;border-radius:12px;
+  font-weight:500;display:inline-block}
+
+/* MESSAGE BUBBLE */
+.msg-row{display:flex;width:100%}
+.msg-row.me{justify-content:flex-end}
+.msg-row.them{justify-content:flex-start}
+.msg{max-width:75%;padding:8px 12px 6px;border-radius:12px;font-size:14px;
+  word-wrap:break-word;position:relative;line-height:1.4}
+.msg.me{background:#005c4b;color:#fff;border-top-right-radius:3px}
+.msg.them{background:var(--bg3);color:#fff;border-top-left-radius:3px}
+.msg .msg-time{font-size:10.5px;opacity:.7;margin-left:8px;
+  float:right;margin-top:4px;display:inline-flex;align-items:center;gap:3px}
+.msg .tick{font-size:12px;color:#fff;display:inline-block;margin-left:2px;
+  transform:scale(1.1)}
+.msg .tick.read{color:var(--tick-read)}
+
+/* TYPING INDICATOR */
+.typing-indicator{padding:6px 16px;font-size:12px;color:var(--muted);
+  font-style:italic;display:none}
+.typing-indicator.show{display:block}
+.typing-dots{display:inline-block}
+.typing-dots span{display:inline-block;width:5px;height:5px;background:var(--muted);
+  border-radius:50%;margin:0 1px;animation:blink 1.4s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+/* INPUT BAR */
+.chat-input-bar{display:flex;gap:8px;padding:10px 12px;background:var(--bg2);
+  border-top:1px solid var(--border);max-width:640px;margin:0 auto;width:100%;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+.chat-input-bar input{margin:0;padding:11px 16px;flex:1;background:var(--bg);
+  border:1.5px solid var(--border);color:#fff;border-radius:22px;font-size:15px;
+  font-family:inherit}
 .chat-input-bar input:focus{outline:none;border-color:var(--primary)}
-.chat-input-bar button{width:48px;height:48px;border-radius:50%;border:none;
+.chat-input-bar button{width:44px;height:44px;border-radius:50%;border:none;
   background:var(--primary);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
+.chat-input-bar button:active{transform:scale(.95)}
 
 .empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
 .empty .big{font-size:52px;display:block;margin-bottom:12px;opacity:.5}
@@ -80,7 +137,9 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
   <p>Loading...</p>
 </div>
 
+<!-- ============================================= -->
 <!-- CHAT LIST VIEW -->
+<!-- ============================================= -->
 <div id="listView">
   <div class="topnav">
     <h1>Messages 💬</h1>
@@ -92,17 +151,30 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
   <div class="bottom-nav" id="nav"></div>
 </div>
 
+<!-- ============================================= -->
 <!-- CHAT WINDOW VIEW -->
+<!-- ============================================= -->
 <div id="chatView" class="hidden">
   <div class="topnav">
     <button onclick="backToList()">←</button>
-    <h1 id="chatTitle">Chat</h1>
+    <div class="chat-header-user">
+      <div class="chat-header-av" id="chatHeaderAv">👤</div>
+      <div class="chat-header-info">
+        <h1 id="chatTitle">Chat</h1>
+        <div class="chat-header-status" id="chatStatus">Offline</div>
+      </div>
+    </div>
     <div style="width:36px"></div>
   </div>
   <div class="chat-window">
     <div class="chat-messages" id="messagesBox"></div>
+    <div class="typing-indicator" id="typingIndicator">
+      <span id="typingName">Someone</span> is typing
+      <span class="typing-dots"><span></span><span></span><span></span></span>
+    </div>
     <div class="chat-input-bar">
       <input type="text" id="msgInput" placeholder="Type message..."
+             oninput="handleTyping()"
              onkeypress="if(event.key==='Enter')sendMsg()">
       <button onclick="sendMsg()">➤</button>
     </div>
@@ -111,7 +183,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, push, set, onValue }
+import { getDatabase, ref, get, push, set, update, onValue, onDisconnect, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -129,9 +201,15 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let me = null;
-let currentChat = null; // { cid, otherId, other }
+let currentChat = null;
 let chatUnsub = null;
+let otherUserUnsub = null;
+let typingTimeout = null;
+let presenceUnsub = null;
 
+/* ============================================================
+   HELPERS
+   ============================================================ */
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -144,12 +222,110 @@ function avatarHTML(u) {
 
 function chatId(a, b) { return [a, b].sort().join('_'); }
 
-window.logout = function() {
+// Format time like WhatsApp: 3:45 PM
+function formatTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${m} ${ampm}`;
+}
+
+// Short time for chat list: 3:45 PM or Yesterday or date
+function formatListTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const msgDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.floor((today - msgDay) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return formatTime(ts);
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return d.toLocaleDateString('en-IN', { weekday: 'short' });
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+// Date separator label
+function dateSeparatorLabel(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const msgDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.floor((today - msgDay) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return d.toLocaleDateString('en-IN', { weekday: 'long' });
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// Last seen text
+function formatLastSeen(ts) {
+  if (!ts) return 'Offline';
+  const diff = Date.now() - ts;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Last seen just now';
+  if (mins < 60) return `Last seen ${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `Last seen ${hrs} hr ago`;
+  const days = Math.floor(hrs / 24);
+  if (days === 1) return 'Last seen yesterday';
+  if (days < 7) return `Last seen ${days} days ago`;
+  return 'Last seen ' + new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+window.logout = async function() {
   if (!confirm('Logout?')) return;
+  if (me) {
+    try {
+      await update(ref(db, 'presence/' + me.uid), { online: false, lastSeen: Date.now() });
+    } catch {}
+  }
   localStorage.removeItem('currentUser');
   window.location.href = 'index.html';
 };
 
+/* ============================================================
+   PRESENCE — online/offline tracking
+   ============================================================ */
+function setupPresence() {
+  const presenceRef = ref(db, 'presence/' + me.uid);
+  const onlineData = {
+    online: true,
+    lastSeen: Date.now(),
+    role: me.role,
+    name: me.name,
+    photo: me.photo || ''
+  };
+  set(presenceRef, onlineData);
+  onDisconnect(presenceRef).set({
+    online: false,
+    lastSeen: Date.now(),
+    role: me.role,
+    name: me.name,
+    photo: me.photo || ''
+  });
+
+  // Update lastSeen every 30s while active
+  setInterval(() => {
+    update(presenceRef, { lastSeen: Date.now() }).catch(() => {});
+  }, 30000);
+
+  // On tab close/unload — mark offline
+  window.addEventListener('beforeunload', () => {
+    update(presenceRef, { online: false, lastSeen: Date.now() }).catch(() => {});
+  });
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
 function setupNav() {
   const isPb = me.role === 'playboy';
   document.getElementById('nav').innerHTML = `
@@ -165,102 +341,271 @@ function setupNav() {
   `;
 }
 
+/* ============================================================
+   CHAT LIST
+   ============================================================ */
 async function loadChatList() {
   const box = document.getElementById('chatListBox');
   box.innerHTML = '<div class="empty"><div class="spinner" style="margin:0 auto 16px"></div>Loading...</div>';
 
   try {
-    const chatsSnap = await get(ref(db, 'chats'));
+    const [chatsSnap, presenceSnap, usersSnap] = await Promise.all([
+      get(ref(db, 'chats')),
+      get(ref(db, 'presence')),
+      get(ref(db, 'users'))
+    ]);
+
     if (!chatsSnap.exists()) {
       box.innerHTML = '<div class="empty"><span class="big">💬</span>No chats yet<br><small>Start a booking to chat</small></div>';
       return;
     }
-    const chats = chatsSnap.val();
-    const myCids = Object.keys(chats).filter(k => k.split('_').includes(me.uid));
 
+    const chats = chatsSnap.val();
+    const presences = presenceSnap.exists() ? presenceSnap.val() : {};
+    const users = usersSnap.exists() ? usersSnap.val() : {};
+
+    const myCids = Object.keys(chats).filter(k => k.split('_').includes(me.uid));
     if (!myCids.length) {
       box.innerHTML = '<div class="empty"><span class="big">💬</span>No chats yet</div>';
       return;
     }
 
-    const rows = await Promise.all(myCids.map(async cid => {
+    // Sort by last message time
+    const rows = myCids.map(cid => {
       const otherId = cid.split('_').find(p => p !== me.uid);
-      const us = await get(ref(db, 'users/' + otherId));
-      if (!us.exists()) return '';
-      const other = us.val();
-      const msgs = Object.values(chats[cid] || {}).sort((a, b) => a.time - b.time);
+      const other = users[otherId];
+      if (!other) return null;
+
+      const msgsObj = chats[cid] || {};
+      const msgs = Object.values(msgsObj).sort((a, b) => (a.time || 0) - (b.time || 0));
       const last = msgs[msgs.length - 1];
-      const preview = last
-        ? ((last.from === me.uid ? 'You: ' : '') + last.text).substring(0, 30)
-        : 'No messages';
-      return `<div class="chat-list-item" onclick="openChat('${otherId}')">
-        <div class="chat-av">${avatarHTML(other)}</div>
+
+      // Unread count: messages from other after my last read
+      const lastRead = (me.reads && me.reads[cid]) || 0;
+      const unread = msgs.filter(m => m.from !== me.uid && (m.time || 0) > lastRead).length;
+
+      return {
+        otherId, other, last, unread,
+        lastTime: last ? last.time : 0,
+        online: presences[otherId] && presences[otherId].online
+      };
+    }).filter(Boolean);
+
+    rows.sort((a, b) => b.lastTime - a.lastTime);
+
+    box.innerHTML = rows.map(r => {
+      const preview = r.last
+        ? ((r.last.from === me.uid ? '✓ You: ' : '') + r.last.text).substring(0, 40)
+        : 'No messages yet';
+      const tickMark = r.last && r.last.from === me.uid
+        ? (r.last.read ? ' <span style="color:var(--tick-read)">✓✓</span>' : ' <span>✓</span>')
+        : '';
+
+      return `<div class="chat-list-item" onclick="openChat('${r.otherId}')">
+        <div class="chat-av-wrap">
+          <div class="chat-av">${avatarHTML(r.other)}</div>
+          ${r.online ? '<div class="online-dot"></div>' : ''}
+        </div>
         <div class="chat-info">
-          <h4>${escapeHtml(other.name)}</h4>
-          <p>${escapeHtml(preview)}</p>
+          <div class="row-top">
+            <h4>${escapeHtml(r.other.name)}</h4>
+            <span class="time-small">${r.last ? formatListTime(r.last.time) : ''}</span>
+          </div>
+          <div class="row-bottom">
+            <p>${escapeHtml(preview)}${tickMark}</p>
+            ${r.unread > 0 ? `<span class="unread-badge">${r.unread}</span>` : ''}
+          </div>
         </div>
       </div>`;
-    }));
-    box.innerHTML = rows.join('');
+    }).join('');
   } catch (e) {
     box.innerHTML = '<div class="empty">Failed: ' + e.message + '</div>';
   }
 }
 
+/* ============================================================
+   OPEN CHAT
+   ============================================================ */
 window.openChat = async function(otherId) {
   const cid = chatId(me.uid, otherId);
+
   const us = await get(ref(db, 'users/' + otherId));
   if (!us.exists()) return;
   const other = us.val();
 
   currentChat = { cid, otherId, other };
+
+  // Update header
   document.getElementById('chatTitle').textContent = other.name;
+  document.getElementById('chatHeaderAv').innerHTML = avatarHTML(other);
 
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('chatView').classList.remove('hidden');
 
+  // Clear unread for this chat
+  await update(ref(db, 'users/' + me.uid), {
+    ['reads/' + cid]: Date.now()
+  });
+
+  // Mark all incoming messages as read
+  await markMessagesRead(cid);
+
   renderMessages();
 
+  // Subscribe to chat messages
   if (chatUnsub) chatUnsub();
-  chatUnsub = onValue(ref(db, 'chats/' + cid), () => renderMessages());
+  chatUnsub = onValue(ref(db, 'chats/' + cid), async () => {
+    await markMessagesRead(cid);
+    renderMessages();
+  });
+
+  // Subscribe to other user presence
+  if (otherUserUnsub) otherUserUnsub();
+  otherUserUnsub = onValue(ref(db, 'presence/' + otherId), snap => {
+    const p = snap.exists() ? snap.val() : { online: false };
+    updateChatHeaderStatus(p);
+  });
+
+  // Subscribe to typing state (other user typing to me)
+  if (presenceUnsub) presenceUnsub();
+  presenceUnsub = onValue(ref(db, 'typing/' + otherId + '/' + me.uid), snap => {
+    const isTyping = snap.exists() && snap.val() === true;
+    document.getElementById('typingIndicator').classList.toggle('show', isTyping);
+    document.getElementById('typingName').textContent = other.name.split(' ')[0];
+  });
 };
 
+function updateChatHeaderStatus(presence) {
+  const el = document.getElementById('chatStatus');
+  if (presence.online) {
+    el.textContent = 'online';
+    el.classList.add('online');
+  } else {
+    el.textContent = formatLastSeen(presence.lastSeen);
+    el.classList.remove('online');
+  }
+}
+
+// Mark all incoming messages as read
+async function markMessagesRead(cid) {
+  const snap = await get(ref(db, 'chats/' + cid));
+  if (!snap.exists()) return;
+  const msgs = snap.val();
+  const updates = {};
+  Object.entries(msgs).forEach(([k, m]) => {
+    if (m.from !== me.uid && !m.read) {
+      updates[`chats/${cid}/${k}/read`] = true;
+    }
+  });
+  if (Object.keys(updates).length) {
+    await update(ref(db), updates).catch(() => {});
+  }
+}
+
+/* ============================================================
+   BACK
+   ============================================================ */
 window.backToList = function() {
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  if (otherUserUnsub) { otherUserUnsub(); otherUserUnsub = null; }
+  if (presenceUnsub) { presenceUnsub(); presenceUnsub = null; }
   currentChat = null;
+  document.getElementById('typingIndicator').classList.remove('show');
   document.getElementById('chatView').classList.add('hidden');
   document.getElementById('listView').classList.remove('hidden');
   loadChatList();
 };
 
+/* ============================================================
+   RENDER MESSAGES
+   ============================================================ */
 async function renderMessages() {
   if (!currentChat) return;
   const snap = await get(ref(db, 'chats/' + currentChat.cid));
   const box = document.getElementById('messagesBox');
+
   if (!snap.exists()) {
     box.innerHTML = '<div class="empty" style="padding:20px">Say hi 👋</div>';
     return;
   }
-  const msgs = Object.values(snap.val()).sort((a, b) => a.time - b.time);
-  box.innerHTML = msgs.map(m => `
-    <div class="msg ${m.from === me.uid ? 'me' : 'them'}">${escapeHtml(m.text)}</div>
-  `).join('');
+
+  const msgs = Object.entries(snap.val())
+    .map(([k, v]) => ({ id: k, ...v }))
+    .sort((a, b) => (a.time || 0) - (b.time || 0));
+
+  let html = '';
+  let lastDay = '';
+
+  msgs.forEach(m => {
+    // Date separator
+    const day = new Date(m.time).toDateString();
+    if (day !== lastDay) {
+      html += `<div class="date-sep"><span>${dateSeparatorLabel(m.time)}</span></div>`;
+      lastDay = day;
+    }
+
+    const isMe = m.from === me.uid;
+    let tick = '';
+    if (isMe) {
+      if (m.read) tick = '<span class="tick read">✓✓</span>';
+      else tick = '<span class="tick">✓</span>';
+    }
+
+    html += `<div class="msg-row ${isMe ? 'me' : 'them'}">
+      <div class="msg ${isMe ? 'me' : 'them'}">
+        ${escapeHtml(m.text)}
+        <span class="msg-time">${formatTime(m.time)}${tick}</span>
+      </div>
+    </div>`;
+  });
+
+  box.innerHTML = html;
   box.scrollTop = box.scrollHeight;
 }
 
+/* ============================================================
+   TYPING INDICATOR — send
+   ============================================================ */
+window.handleTyping = function() {
+  if (!currentChat) return;
+  const typingRef = ref(db, 'typing/' + me.uid + '/' + currentChat.otherId);
+  set(typingRef, true);
+
+  if (typingTimeout) clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    set(typingRef, false);
+  }, 2000);
+};
+
+/* ============================================================
+   SEND MESSAGE
+   ============================================================ */
 window.sendMsg = async function() {
   if (!currentChat) return;
   const inp = document.getElementById('msgInput');
   const text = inp.value.trim();
   if (!text) return;
   inp.value = '';
+
+  // Clear typing
+  set(ref(db, 'typing/' + me.uid + '/' + currentChat.otherId), false);
+
   try {
     const r = push(ref(db, 'chats/' + currentChat.cid));
-    await set(r, { from: me.uid, text, time: Date.now() });
-  } catch (e) {}
+    await set(r, {
+      from: me.uid,
+      text,
+      time: Date.now(),
+      read: false
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-// INIT
+/* ============================================================
+   INIT
+   ============================================================ */
 (async function init() {
   await new Promise(r => setTimeout(r, 300));
   document.getElementById('loader').style.display = 'none';
@@ -271,13 +616,22 @@ window.sendMsg = async function() {
   try {
     const ref_ = JSON.parse(saved);
     const snap = await get(ref(db, 'users/' + ref_.uid));
-    if (!snap.exists()) { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; return; }
+    if (!snap.exists()) {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+      return;
+    }
     me = snap.val();
-    if (me.status === 'blocked') { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; return; }
+    if (me.status === 'blocked') {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+      return;
+    }
 
     setupNav();
+    setupPresence();
 
-    // URL query ?with=otherId
+    // Check URL ?with=otherId
     const params = new URLSearchParams(location.search);
     const withId = params.get('with');
     if (withId) {
@@ -285,7 +639,9 @@ window.sendMsg = async function() {
     } else {
       await loadChatList();
     }
-  } catch (e) { window.location.href = 'index.html'; }
+  } catch (e) {
+    window.location.href = 'index.html';
+  }
 })();
 </script>
 </body>
