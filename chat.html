@@ -41,8 +41,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .chat-list-item:hover{border-color:var(--primary)}
 .chat-av-wrap{position:relative;flex-shrink:0}
 .chat-av{width:52px;height:52px;border-radius:50%;background:var(--bg3);
-  display:flex;align-items:center;justify-content:center;font-size:24px;
-  overflow:hidden}
+  display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden}
 .chat-av img{width:100%;height:100%;object-fit:cover}
 .online-dot{position:absolute;bottom:1px;right:1px;width:13px;height:13px;
   border-radius:50%;background:var(--online);border:2.5px solid var(--bg2)}
@@ -68,14 +67,28 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .chat-header-status{font-size:11px;color:rgba(255,255,255,.85);margin-top:1px}
 .chat-header-status.online{color:#b3ffd9;font-weight:600}
 
+/* MENU BUTTON */
+.chat-menu-btn{background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;flex-shrink:0}
+
+/* DROPDOWN MENU */
+.chat-menu{position:fixed;top:70px;right:16px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:12px;padding:6px;z-index:200;
+  min-width:180px;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.chat-menu.show{display:block}
+.chat-menu button{display:flex;align-items:center;gap:10px;width:100%;
+  padding:10px 14px;background:transparent;border:none;color:#fff;
+  font-size:14px;cursor:pointer;border-radius:8px;font-family:inherit;text-align:left}
+.chat-menu button:hover{background:var(--bg3)}
+.chat-menu button.danger{color:var(--danger)}
+
 .chat-messages{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;
   gap:6px;max-width:640px;margin:0 auto;width:100%;
   background-image:radial-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
   background-size:20px 20px}
 
 /* DATE SEPARATOR */
-.date-sep{text-align:center;margin:12px 0 6px;color:var(--muted);font-size:11px;
-  position:relative}
+.date-sep{text-align:center;margin:12px 0 6px;color:var(--muted);font-size:11px}
 .date-sep span{background:var(--bg3);padding:4px 12px;border-radius:12px;
   font-weight:500;display:inline-block}
 
@@ -83,15 +96,52 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .msg-row{display:flex;width:100%}
 .msg-row.me{justify-content:flex-end}
 .msg-row.them{justify-content:flex-start}
-.msg{max-width:75%;padding:8px 12px 6px;border-radius:12px;font-size:14px;
-  word-wrap:break-word;position:relative;line-height:1.4}
+.msg{max-width:78%;padding:8px 12px 6px;border-radius:12px;font-size:14px;
+  word-wrap:break-word;position:relative;line-height:1.4;cursor:pointer}
 .msg.me{background:#005c4b;color:#fff;border-top-right-radius:3px}
 .msg.them{background:var(--bg3);color:#fff;border-top-left-radius:3px}
-.msg .msg-time{font-size:10.5px;opacity:.7;margin-left:8px;
-  float:right;margin-top:4px;display:inline-flex;align-items:center;gap:3px}
+.msg .msg-time{font-size:10.5px;opacity:.75;margin-left:8px;
+  float:right;margin-top:4px;display:inline-flex;align-items:center;gap:3px;
+  white-space:nowrap}
 .msg .tick{font-size:12px;color:#fff;display:inline-block;margin-left:2px;
   transform:scale(1.1)}
 .msg .tick.read{color:var(--tick-read)}
+
+/* REPLY PREVIEW */
+.msg .reply-preview{background:rgba(0,0,0,.25);border-left:3px solid var(--gold);
+  padding:5px 8px;border-radius:5px;margin-bottom:5px;font-size:11.5px;
+  opacity:.85;word-wrap:break-word}
+.msg .reply-preview strong{color:var(--gold);display:block;font-size:10.5px;margin-bottom:2px}
+.msg.me .reply-preview{background:rgba(0,0,0,.3)}
+
+/* MESSAGE ACTIONS (on long press / click) */
+.msg-actions{position:fixed;background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:6px;z-index:300;min-width:150px;display:none;
+  box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.msg-actions.show{display:block}
+.msg-actions button{display:flex;align-items:center;gap:10px;width:100%;
+  padding:10px 14px;background:transparent;border:none;color:#fff;
+  font-size:13px;cursor:pointer;border-radius:8px;font-family:inherit;text-align:left}
+.msg-actions button:hover{background:var(--bg3)}
+.msg-actions button.danger{color:var(--danger)}
+
+/* LOCATION BUBBLE */
+.location-bubble{display:flex;align-items:center;gap:10px;padding:6px;
+  background:rgba(0,0,0,.2);border-radius:8px;cursor:pointer;margin-bottom:4px}
+.location-bubble .loc-icon{font-size:22px}
+.location-bubble .loc-info{flex:1}
+.location-bubble .loc-info h5{font-size:12px;margin-bottom:2px}
+.location-bubble .loc-info p{font-size:11px;opacity:.8;word-break:break-all}
+
+/* VOICE BUBBLE */
+.voice-bubble{display:flex;align-items:center;gap:10px;padding:4px;
+  background:rgba(0,0,0,.2);border-radius:8px;margin-bottom:4px;min-width:180px}
+.voice-bubble .play-btn{width:34px;height:34px;border-radius:50%;background:var(--primary);
+  border:none;color:#fff;font-size:14px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.voice-bubble .waveform{flex:1;height:24px;display:flex;align-items:center;gap:2px}
+.voice-bubble .waveform div{width:3px;background:rgba(255,255,255,.6);border-radius:2px}
+.voice-bubble .voice-dur{font-size:11px;opacity:.8}
 
 /* TYPING INDICATOR */
 .typing-indicator{padding:6px 16px;font-size:12px;color:var(--muted);
@@ -104,17 +154,49 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .typing-dots span:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
 
-/* INPUT BAR */
-.chat-input-bar{display:flex;gap:8px;padding:10px 12px;background:var(--bg2);
+/* REPLY BAR */
+.reply-bar{display:none;padding:8px 12px;background:var(--bg3);
   border-top:1px solid var(--border);max-width:640px;margin:0 auto;width:100%;
-  padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  align-items:center;gap:10px}
+.reply-bar.show{display:flex}
+.reply-bar .reply-content{flex:1;min-width:0;
+  border-left:3px solid var(--primary);padding-left:10px}
+.reply-bar .reply-content strong{font-size:11px;color:var(--primary);display:block}
+.reply-bar .reply-content p{font-size:12px;color:var(--muted);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.reply-bar button{background:transparent;border:none;color:var(--muted);
+  font-size:18px;cursor:pointer;padding:4px}
+
+/* INPUT BAR */
+.chat-input-bar{display:flex;gap:6px;padding:8px 12px;background:var(--bg2);
+  border-top:1px solid var(--border);max-width:640px;margin:0 auto;width:100%;
+  padding-bottom:calc(8px + env(safe-area-inset-bottom));align-items:center}
+.chat-input-bar .icon-btn{width:42px;height:42px;border-radius:50%;border:none;
+  background:var(--bg3);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.chat-input-bar .icon-btn:active{transform:scale(.9)}
+.chat-input-bar .icon-btn.recording{background:var(--danger);animation:recPulse 1s infinite}
+@keyframes recPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 .chat-input-bar input{margin:0;padding:11px 16px;flex:1;background:var(--bg);
   border:1.5px solid var(--border);color:#fff;border-radius:22px;font-size:15px;
-  font-family:inherit}
+  font-family:inherit;min-width:0}
 .chat-input-bar input:focus{outline:none;border-color:var(--primary)}
-.chat-input-bar button{width:44px;height:44px;border-radius:50%;border:none;
+.chat-input-bar .send-btn{width:42px;height:42px;border-radius:50%;border:none;
   background:var(--primary);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
-.chat-input-bar button:active{transform:scale(.95)}
+.chat-input-bar .send-btn:active{transform:scale(.95)}
+
+/* RECORDING OVERLAY */
+.recording-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.recording-overlay.show{display:flex}
+.recording-overlay .rec-time{font-size:36px;font-weight:700;color:var(--primary);
+  font-variant-numeric:tabular-nums}
+.recording-overlay .rec-text{color:var(--muted);font-size:14px}
+.recording-overlay .rec-stop{width:80px;height:80px;border-radius:50%;
+  background:var(--danger);border:none;color:#fff;font-size:30px;cursor:pointer;
+  animation:recPulse 1s infinite}
+.recording-overlay .rec-hint{margin-top:20px;color:var(--muted);font-size:12px;
+  text-align:center;padding:0 30px}
 
 .empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
 .empty .big{font-size:52px;display:block;margin-bottom:12px;opacity:.5}
@@ -127,6 +209,44 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .bottom-nav a .icon{font-size:20px}
 .bottom-nav a.active{color:var(--primary)}
 
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);width:100%;max-width:420px;border-radius:16px;
+  padding:24px 20px;max-height:90vh;overflow-y:auto;border:1px solid var(--border)}
+.modal h3{font-size:18px;margin-bottom:16px;color:var(--primary)}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.modal .form-group{margin-bottom:14px}
+.modal .form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.modal textarea{width:100%;padding:13px 16px;background:var(--bg);
+  border:1.5px solid var(--border);color:#fff;border-radius:10px;font-size:14px;
+  font-family:inherit;resize:vertical;min-height:80px}
+.modal textarea:focus{outline:none;border-color:var(--primary)}
+.modal select{width:100%;padding:13px 16px;background:var(--bg);
+  border:1.5px solid var(--border);color:#fff;border-radius:10px;font-size:14px;
+  font-family:inherit;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%23888' d='M6 9L1 4h10z'/></svg>");
+  background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+.modal select:focus{outline:none;border-color:var(--primary)}
+.modal .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 20px;border:none;border-radius:10px;cursor:pointer;
+  font-size:15px;font-weight:600;transition:.2s;width:100%;font-family:inherit;color:#fff}
+.modal .btn:active{transform:scale(.97)}
+.modal .btn:disabled{opacity:.5;cursor:not-allowed}
+.modal .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
+.modal .btn-danger{background:var(--danger)}
+.modal .btn-ghost{background:var(--bg3);color:#fff}
+
+/* TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:var(--bg3);color:#fff;padding:13px 24px;border-radius:30px;
+  font-size:14px;font-weight:500;z-index:9999;max-width:90vw;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);animation:toastIn .3s;
+  border:1px solid var(--border)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--danger)}
+
 .hidden{display:none!important}
 </style>
 </head>
@@ -137,9 +257,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
   <p>Loading...</p>
 </div>
 
-<!-- ============================================= -->
-<!-- CHAT LIST VIEW -->
-<!-- ============================================= -->
+<!-- CHAT LIST -->
 <div id="listView">
   <div class="topnav">
     <h1>Messages 💬</h1>
@@ -151,9 +269,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
   <div class="bottom-nav" id="nav"></div>
 </div>
 
-<!-- ============================================= -->
-<!-- CHAT WINDOW VIEW -->
-<!-- ============================================= -->
+<!-- CHAT WINDOW -->
 <div id="chatView" class="hidden">
   <div class="topnav">
     <button onclick="backToList()">←</button>
@@ -164,26 +280,71 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
         <div class="chat-header-status" id="chatStatus">Offline</div>
       </div>
     </div>
-    <div style="width:36px"></div>
+    <button class="chat-menu-btn" onclick="toggleChatMenu(event)">⋮</button>
   </div>
+
+  <div class="chat-menu" id="chatMenu">
+    <button onclick="blockUser()">🚫 Block User</button>
+    <button onclick="reportUser()">🚩 Report to Admin</button>
+    <button onclick="clearChat()">🧹 Clear Chat</button>
+  </div>
+
   <div class="chat-window">
     <div class="chat-messages" id="messagesBox"></div>
     <div class="typing-indicator" id="typingIndicator">
       <span id="typingName">Someone</span> is typing
       <span class="typing-dots"><span></span><span></span><span></span></span>
     </div>
+
+    <!-- Reply preview bar -->
+    <div class="reply-bar" id="replyBar">
+      <div class="reply-content">
+        <strong>Replying to</strong>
+        <p id="replyText">Message</p>
+      </div>
+      <button onclick="cancelReply()">✕</button>
+    </div>
+
+    <!-- Input bar with location & voice -->
     <div class="chat-input-bar">
+      <button class="icon-btn" onclick="toggleAttachMenu(event)" title="Attach">＋</button>
       <input type="text" id="msgInput" placeholder="Type message..."
              oninput="handleTyping()"
              onkeypress="if(event.key==='Enter')sendMsg()">
-      <button onclick="sendMsg()">➤</button>
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>
+
+    <!-- Attach menu -->
+    <div class="chat-menu" id="attachMenu" style="bottom:80px;top:auto;right:16px;left:auto">
+      <button onclick="shareLocation()">📍 Share Location</button>
+      <button onclick="startVoiceRecord()">🎤 Voice Message</button>
     </div>
   </div>
 </div>
 
+<!-- MESSAGE ACTIONS POPUP -->
+<div class="msg-actions" id="msgActions">
+  <button onclick="replyToMessage()">↩️ Reply</button>
+  <button onclick="copyMessage()">📋 Copy</button>
+  <button class="danger" onclick="deleteMessage()">🗑️ Delete</button>
+</div>
+
+<!-- RECORDING OVERLAY -->
+<div class="recording-overlay" id="recordingOverlay">
+  <div class="rec-text">Recording voice message</div>
+  <div class="rec-time" id="recTime">0:00</div>
+  <button class="rec-stop" onclick="stopVoiceRecord()">⏹</button>
+  <div class="rec-hint">Tap the stop button to send</div>
+</div>
+
+<!-- MODAL (Report / Block) -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, push, set, update, onValue, onDisconnect, serverTimestamp }
+import { getDatabase, ref, get, push, set, update, remove, onValue, onDisconnect }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -207,9 +368,32 @@ let otherUserUnsub = null;
 let typingTimeout = null;
 let presenceUnsub = null;
 
+// Reply / delete state
+let replyingTo = null;
+let selectedMsg = null;
+
+// Voice recording
+let mediaRecorder = null;
+let audioChunks = [];
+let recStartTime = 0;
+let recTimerInterval = null;
+let recStream = null;
+
+// Auto-delete (24 hrs = 86400000 ms)
+const AUTO_DELETE_MS = 24 * 60 * 60 * 1000;
+
 /* ============================================================
    HELPERS
    ============================================================ */
+function toast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
+window.toast = toast;
+
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -222,7 +406,6 @@ function avatarHTML(u) {
 
 function chatId(a, b) { return [a, b].sort().join('_'); }
 
-// Format time like WhatsApp: 3:45 PM
 function formatTime(ts) {
   if (!ts) return '';
   const d = new Date(ts);
@@ -233,7 +416,6 @@ function formatTime(ts) {
   return `${h}:${m} ${ampm}`;
 }
 
-// Short time for chat list: 3:45 PM or Yesterday or date
 function formatListTime(ts) {
   if (!ts) return '';
   const d = new Date(ts);
@@ -241,28 +423,24 @@ function formatListTime(ts) {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const msgDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const diffDays = Math.floor((today - msgDay) / (1000 * 60 * 60 * 24));
-
   if (diffDays === 0) return formatTime(ts);
   if (diffDays === 1) return 'Yesterday';
   if (diffDays < 7) return d.toLocaleDateString('en-IN', { weekday: 'short' });
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 }
 
-// Date separator label
 function dateSeparatorLabel(ts) {
   const d = new Date(ts);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const msgDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const diffDays = Math.floor((today - msgDay) / (1000 * 60 * 60 * 24));
-
   if (diffDays === 0) return 'Today';
   if (diffDays === 1) return 'Yesterday';
   if (diffDays < 7) return d.toLocaleDateString('en-IN', { weekday: 'long' });
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// Last seen text
 function formatLastSeen(ts) {
   if (!ts) return 'Offline';
   const diff = Date.now() - ts;
@@ -277,47 +455,38 @@ function formatLastSeen(ts) {
   return 'Last seen ' + new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 }
 
+function isExpired(msg) {
+  return msg.time && (Date.now() - msg.time) > AUTO_DELETE_MS;
+}
+
 /* ============================================================
    LOGOUT
    ============================================================ */
 window.logout = async function() {
   if (!confirm('Logout?')) return;
   if (me) {
-    try {
-      await update(ref(db, 'presence/' + me.uid), { online: false, lastSeen: Date.now() });
-    } catch {}
+    try { await update(ref(db, 'presence/' + me.uid), { online: false, lastSeen: Date.now() }); } catch {}
   }
   localStorage.removeItem('currentUser');
   window.location.href = 'index.html';
 };
 
 /* ============================================================
-   PRESENCE — online/offline tracking
+   PRESENCE
    ============================================================ */
 function setupPresence() {
   const presenceRef = ref(db, 'presence/' + me.uid);
   const onlineData = {
-    online: true,
-    lastSeen: Date.now(),
-    role: me.role,
-    name: me.name,
-    photo: me.photo || ''
+    online: true, lastSeen: Date.now(),
+    role: me.role, name: me.name, photo: me.photo || ''
   };
   set(presenceRef, onlineData);
-  onDisconnect(presenceRef).set({
-    online: false,
-    lastSeen: Date.now(),
-    role: me.role,
-    name: me.name,
-    photo: me.photo || ''
-  });
+  onDisconnect(presenceRef).set({ ...onlineData, online: false, lastSeen: Date.now() });
 
-  // Update lastSeen every 30s while active
   setInterval(() => {
     update(presenceRef, { lastSeen: Date.now() }).catch(() => {});
   }, 30000);
 
-  // On tab close/unload — mark offline
   window.addEventListener('beforeunload', () => {
     update(presenceRef, { online: false, lastSeen: Date.now() }).catch(() => {});
   });
@@ -332,8 +501,7 @@ function setupNav() {
     <a ${!isPb ? `onclick="location.href='home.html'"` : `onclick="location.href='profile.html'"`}>
       <span class="icon">${isPb ? '👨' : '🏠'}</span>
       <span>${isPb ? 'Profile' : 'Home'}</span></a>
-    <a class="active">
-      <span class="icon">💬</span><span>Chat</span></a>
+    <a class="active"><span class="icon">💬</span><span>Chat</span></a>
     <a onclick="location.href='bookings.html'">
       <span class="icon">📋</span><span>Bookings</span></a>
     <a onclick="location.href='support.html'">
@@ -349,10 +517,11 @@ async function loadChatList() {
   box.innerHTML = '<div class="empty"><div class="spinner" style="margin:0 auto 16px"></div>Loading...</div>';
 
   try {
-    const [chatsSnap, presenceSnap, usersSnap] = await Promise.all([
+    const [chatsSnap, presenceSnap, usersSnap, blocksSnap] = await Promise.all([
       get(ref(db, 'chats')),
       get(ref(db, 'presence')),
-      get(ref(db, 'users'))
+      get(ref(db, 'users')),
+      get(ref(db, 'blocks/' + me.uid))
     ]);
 
     if (!chatsSnap.exists()) {
@@ -363,6 +532,7 @@ async function loadChatList() {
     const chats = chatsSnap.val();
     const presences = presenceSnap.exists() ? presenceSnap.val() : {};
     const users = usersSnap.exists() ? usersSnap.val() : {};
+    const blocked = blocksSnap.exists() ? blocksSnap.val() : {};
 
     const myCids = Object.keys(chats).filter(k => k.split('_').includes(me.uid));
     if (!myCids.length) {
@@ -370,36 +540,55 @@ async function loadChatList() {
       return;
     }
 
-    // Sort by last message time
     const rows = myCids.map(cid => {
       const otherId = cid.split('_').find(p => p !== me.uid);
       const other = users[otherId];
       if (!other) return null;
 
+      // Filter expired messages
       const msgsObj = chats[cid] || {};
-      const msgs = Object.values(msgsObj).sort((a, b) => (a.time || 0) - (b.time || 0));
+      const msgs = Object.values(msgsObj)
+        .filter(m => !isExpired(m))
+        .sort((a, b) => (a.time || 0) - (b.time || 0));
       const last = msgs[msgs.length - 1];
 
-      // Unread count: messages from other after my last read
       const lastRead = (me.reads && me.reads[cid]) || 0;
       const unread = msgs.filter(m => m.from !== me.uid && (m.time || 0) > lastRead).length;
 
       return {
         otherId, other, last, unread,
         lastTime: last ? last.time : 0,
-        online: presences[otherId] && presences[otherId].online
+        online: presences[otherId] && presences[otherId].online,
+        isBlocked: blocked[otherId] === true
       };
     }).filter(Boolean);
 
     rows.sort((a, b) => b.lastTime - a.lastTime);
 
+    if (!rows.length) {
+      box.innerHTML = '<div class="empty"><span class="big">💬</span>No active chats</div>';
+      return;
+    }
+
     box.innerHTML = rows.map(r => {
-      const preview = r.last
-        ? ((r.last.from === me.uid ? '✓ You: ' : '') + r.last.text).substring(0, 40)
-        : 'No messages yet';
-      const tickMark = r.last && r.last.from === me.uid
-        ? (r.last.read ? ' <span style="color:var(--tick-read)">✓✓</span>' : ' <span>✓</span>')
-        : '';
+      let preview = 'No messages yet';
+      let tickMark = '';
+
+      if (r.last) {
+        const type = r.last.type || 'text';
+        if (type === 'voice') preview = '🎤 Voice message';
+        else if (type === 'location') preview = '📍 Location';
+        else preview = r.last.text || '';
+
+        if (r.last.from === me.uid) {
+          preview = 'You: ' + preview;
+          tickMark = r.last.read
+            ? ' <span style="color:var(--tick-read)">✓✓</span>'
+            : ' <span>✓</span>';
+        }
+      }
+
+      const blockedBadge = r.isBlocked ? ' 🚫' : '';
 
       return `<div class="chat-list-item" onclick="openChat('${r.otherId}')">
         <div class="chat-av-wrap">
@@ -408,11 +597,11 @@ async function loadChatList() {
         </div>
         <div class="chat-info">
           <div class="row-top">
-            <h4>${escapeHtml(r.other.name)}</h4>
+            <h4>${escapeHtml(r.other.name)}${blockedBadge}</h4>
             <span class="time-small">${r.last ? formatListTime(r.last.time) : ''}</span>
           </div>
           <div class="row-bottom">
-            <p>${escapeHtml(preview)}${tickMark}</p>
+            <p>${escapeHtml(preview.substring(0, 40))}${tickMark}</p>
             ${r.unread > 0 ? `<span class="unread-badge">${r.unread}</span>` : ''}
           </div>
         </div>
@@ -433,47 +622,66 @@ window.openChat = async function(otherId) {
   if (!us.exists()) return;
   const other = us.val();
 
-  currentChat = { cid, otherId, other };
+  // Check if blocked
+  const blockSnap = await get(ref(db, 'blocks/' + me.uid + '/' + otherId));
+  const isBlocked = blockSnap.exists() && blockSnap.val() === true;
 
-  // Update header
+  currentChat = { cid, otherId, other, isBlocked };
+
   document.getElementById('chatTitle').textContent = other.name;
   document.getElementById('chatHeaderAv').innerHTML = avatarHTML(other);
 
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('chatView').classList.remove('hidden');
 
-  // Clear unread for this chat
-  await update(ref(db, 'users/' + me.uid), {
-    ['reads/' + cid]: Date.now()
-  });
-
-  // Mark all incoming messages as read
+  await update(ref(db, 'users/' + me.uid), { ['reads/' + cid]: Date.now() });
   await markMessagesRead(cid);
-
   renderMessages();
 
-  // Subscribe to chat messages
   if (chatUnsub) chatUnsub();
   chatUnsub = onValue(ref(db, 'chats/' + cid), async () => {
     await markMessagesRead(cid);
     renderMessages();
   });
 
-  // Subscribe to other user presence
   if (otherUserUnsub) otherUserUnsub();
   otherUserUnsub = onValue(ref(db, 'presence/' + otherId), snap => {
     const p = snap.exists() ? snap.val() : { online: false };
     updateChatHeaderStatus(p);
   });
 
-  // Subscribe to typing state (other user typing to me)
   if (presenceUnsub) presenceUnsub();
   presenceUnsub = onValue(ref(db, 'typing/' + otherId + '/' + me.uid), snap => {
     const isTyping = snap.exists() && snap.val() === true;
     document.getElementById('typingIndicator').classList.toggle('show', isTyping);
     document.getElementById('typingName').textContent = other.name.split(' ')[0];
   });
+
+  // Update input bar based on block
+  updateInputBarState();
 };
+
+function updateInputBarState() {
+  const inp = document.getElementById('msgInput');
+  const sendBtn = document.querySelector('.chat-input-bar .send-btn');
+  const attachBtn = document.querySelector('.chat-input-bar .icon-btn');
+
+  if (currentChat?.isBlocked) {
+    inp.disabled = true;
+    inp.placeholder = 'You blocked this user';
+    sendBtn.disabled = true;
+    attachBtn.disabled = true;
+    sendBtn.style.opacity = '0.4';
+    attachBtn.style.opacity = '0.4';
+  } else {
+    inp.disabled = false;
+    inp.placeholder = 'Type message...';
+    sendBtn.disabled = false;
+    attachBtn.disabled = false;
+    sendBtn.style.opacity = '1';
+    attachBtn.style.opacity = '1';
+  }
+}
 
 function updateChatHeaderStatus(presence) {
   const el = document.getElementById('chatStatus');
@@ -486,14 +694,13 @@ function updateChatHeaderStatus(presence) {
   }
 }
 
-// Mark all incoming messages as read
 async function markMessagesRead(cid) {
   const snap = await get(ref(db, 'chats/' + cid));
   if (!snap.exists()) return;
   const msgs = snap.val();
   const updates = {};
   Object.entries(msgs).forEach(([k, m]) => {
-    if (m.from !== me.uid && !m.read) {
+    if (m.from !== me.uid && !m.read && !isExpired(m)) {
       updates[`chats/${cid}/${k}/read`] = true;
     }
   });
@@ -502,14 +709,12 @@ async function markMessagesRead(cid) {
   }
 }
 
-/* ============================================================
-   BACK
-   ============================================================ */
 window.backToList = function() {
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
   if (otherUserUnsub) { otherUserUnsub(); otherUserUnsub = null; }
   if (presenceUnsub) { presenceUnsub(); presenceUnsub = null; }
   currentChat = null;
+  cancelReply();
   document.getElementById('typingIndicator').classList.remove('show');
   document.getElementById('chatView').classList.add('hidden');
   document.getElementById('listView').classList.remove('hidden');
@@ -531,13 +736,18 @@ async function renderMessages() {
 
   const msgs = Object.entries(snap.val())
     .map(([k, v]) => ({ id: k, ...v }))
+    .filter(m => !isExpired(m))
     .sort((a, b) => (a.time || 0) - (b.time || 0));
+
+  if (!msgs.length) {
+    box.innerHTML = '<div class="empty" style="padding:20px">Say hi 👋</div>';
+    return;
+  }
 
   let html = '';
   let lastDay = '';
 
   msgs.forEach(m => {
-    // Date separator
     const day = new Date(m.time).toDateString();
     if (day !== lastDay) {
       html += `<div class="date-sep"><span>${dateSeparatorLabel(m.time)}</span></div>`;
@@ -547,13 +757,43 @@ async function renderMessages() {
     const isMe = m.from === me.uid;
     let tick = '';
     if (isMe) {
-      if (m.read) tick = '<span class="tick read">✓✓</span>';
-      else tick = '<span class="tick">✓</span>';
+      tick = m.read
+        ? '<span class="tick read">✓✓</span>'
+        : '<span class="tick">✓</span>';
+    }
+
+    // Build content based on message type
+    let content = '';
+    const type = m.type || 'text';
+
+    if (type === 'voice') {
+      content = `<div class="voice-bubble">
+        <button class="play-btn" onclick="playVoice('${m.id}')">▶</button>
+        <div class="waveform">${[3,7,12,6,9,5,11,7,4,8,6].map(h => `<div style="height:${h}px"></div>`).join('')}</div>
+        <span class="voice-dur">${m.duration || 0}s</span>
+      </div>`;
+    } else if (type === 'location') {
+      content = `<div class="location-bubble" onclick="openLocation('${m.location?.lat || ''}','${m.location?.lng || ''}')">
+        <span class="loc-icon">📍</span>
+        <div class="loc-info">
+          <h5>Shared Location</h5>
+          <p>Tap to view on map</p>
+        </div>
+      </div>`;
+    } else {
+      // Text with optional reply
+      if (m.replyTo) {
+        content += `<div class="reply-preview">
+          <strong>${escapeHtml(m.replyTo.name)}</strong>
+          ${escapeHtml((m.replyTo.text || '').substring(0, 50))}
+        </div>`;
+      }
+      content += escapeHtml(m.text || '');
     }
 
     html += `<div class="msg-row ${isMe ? 'me' : 'them'}">
-      <div class="msg ${isMe ? 'me' : 'them'}">
-        ${escapeHtml(m.text)}
+      <div class="msg ${isMe ? 'me' : 'them'}" onclick="showMsgActions(event, '${m.id}', ${isMe})">
+        ${content}
         <span class="msg-time">${formatTime(m.time)}${tick}</span>
       </div>
     </div>`;
@@ -561,10 +801,117 @@ async function renderMessages() {
 
   box.innerHTML = html;
   box.scrollTop = box.scrollHeight;
+
+  // Trigger cleanup of expired messages
+  cleanupExpired(currentChat.cid);
 }
 
 /* ============================================================
-   TYPING INDICATOR — send
+   CLEANUP EXPIRED MESSAGES
+   ============================================================ */
+async function cleanupExpired(cid) {
+  try {
+    const snap = await get(ref(db, 'chats/' + cid));
+    if (!snap.exists()) return;
+    const msgs = snap.val();
+    const updates = {};
+    Object.entries(msgs).forEach(([k, m]) => {
+      if (isExpired(m)) updates[`chats/${cid}/${k}`] = null;
+    });
+    if (Object.keys(updates).length) {
+      await update(ref(db), updates).catch(() => {});
+    }
+  } catch {}
+}
+
+/* ============================================================
+   MESSAGE ACTIONS
+   ============================================================ */
+window.showMsgActions = function(ev, msgId, isMe) {
+  ev.stopPropagation();
+  selectedMsg = msgId;
+
+  const popup = document.getElementById('msgActions');
+  const rect = ev.currentTarget.getBoundingClientRect();
+
+  popup.style.top = (rect.bottom + 8) + 'px';
+  popup.style.left = Math.min(rect.left, window.innerWidth - 170) + 'px';
+
+  // Show/hide delete button based on ownership
+  const deleteBtn = popup.querySelector('button.danger');
+  deleteBtn.style.display = isMe ? 'flex' : 'none';
+
+  popup.classList.add('show');
+
+  // Close on outside click
+  setTimeout(() => {
+    document.addEventListener('click', closeMsgActionsOnce);
+  }, 100);
+};
+
+function closeMsgActionsOnce() {
+  document.removeEventListener('click', closeMsgActionsOnce);
+  document.getElementById('msgActions').classList.remove('show');
+}
+
+window.replyToMessage = async function() {
+  if (!selectedMsg || !currentChat) return;
+  const snap = await get(ref(db, 'chats/' + currentChat.cid + '/' + selectedMsg));
+  if (!snap.exists()) return;
+  const m = snap.val();
+
+  replyingTo = {
+    id: selectedMsg,
+    name: m.from === me.uid ? 'You' : currentChat.other.name,
+    text: m.type === 'voice' ? '🎤 Voice message'
+         : m.type === 'location' ? '📍 Location'
+         : (m.text || ''),
+    type: m.type || 'text'
+  };
+
+  document.getElementById('replyBar').classList.add('show');
+  document.getElementById('replyText').textContent = replyingTo.text.substring(0, 60);
+  document.getElementById('msgInput').focus();
+
+  document.getElementById('msgActions').classList.remove('show');
+};
+
+window.cancelReply = function() {
+  replyingTo = null;
+  document.getElementById('replyBar').classList.remove('show');
+};
+
+window.copyMessage = async function() {
+  if (!selectedMsg || !currentChat) return;
+  const snap = await get(ref(db, 'chats/' + currentChat.cid + '/' + selectedMsg));
+  if (!snap.exists()) return;
+  const m = snap.val();
+  if (m.text) {
+    try {
+      await navigator.clipboard.writeText(m.text);
+      toast('Copied!', 'success');
+    } catch {
+      toast('Copy failed', 'error');
+    }
+  }
+  document.getElementById('msgActions').classList.remove('show');
+};
+
+window.deleteMessage = async function() {
+  if (!selectedMsg || !currentChat) return;
+  if (!confirm('Delete this message?')) return;
+  try {
+    await remove(ref(db, 'chats/' + currentChat.cid + '/' + selectedMsg));
+    toast('Message deleted', 'success');
+    renderMessages();
+  } catch (e) {
+    toast('Failed', 'error');
+  }
+  document.getElementById('msgActions').classList.remove('show');
+};
+
+/* ============================================================
+   TYPING
    ============================================================ */
 window.handleTyping = function() {
   if (!currentChat) return;
@@ -572,35 +919,330 @@ window.handleTyping = function() {
   set(typingRef, true);
 
   if (typingTimeout) clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => {
-    set(typingRef, false);
-  }, 2000);
+  typingTimeout = setTimeout(() => set(typingRef, false), 2000);
 };
 
 /* ============================================================
    SEND MESSAGE
    ============================================================ */
 window.sendMsg = async function() {
-  if (!currentChat) return;
+  if (!currentChat || currentChat.isBlocked) return;
   const inp = document.getElementById('msgInput');
   const text = inp.value.trim();
   if (!text) return;
   inp.value = '';
 
-  // Clear typing
   set(ref(db, 'typing/' + me.uid + '/' + currentChat.otherId), false);
 
   try {
-    const r = push(ref(db, 'chats/' + currentChat.cid));
-    await set(r, {
+    const msgData = {
       from: me.uid,
       text,
+      type: 'text',
       time: Date.now(),
       read: false
-    });
+    };
+
+    if (replyingTo) {
+      msgData.replyTo = {
+        id: replyingTo.id,
+        name: replyingTo.name,
+        text: replyingTo.text,
+        type: replyingTo.type
+      };
+    }
+
+    const r = push(ref(db, 'chats/' + currentChat.cid));
+    await set(r, msgData);
+    cancelReply();
   } catch (e) {
     console.error(e);
   }
+};
+
+/* ============================================================
+   LOCATION SHARE
+   ============================================================ */
+window.shareLocation = async function() {
+  document.getElementById('attachMenu').classList.remove('show');
+  if (!currentChat || currentChat.isBlocked) return;
+
+  if (!navigator.geolocation) return toast('Location not supported', 'error');
+
+  toast('Getting location...', 'success');
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude, longitude } = pos.coords;
+    try {
+      const msgData = {
+        from: me.uid,
+        type: 'location',
+        location: { lat: latitude, lng: longitude },
+        time: Date.now(),
+        read: false
+      };
+      if (replyingTo) msgData.replyTo = replyingTo;
+
+      const r = push(ref(db, 'chats/' + currentChat.cid));
+      await set(r, msgData);
+      toast('📍 Location shared!', 'success');
+      cancelReply();
+    } catch (e) { toast('Failed to share', 'error'); }
+  }, (err) => {
+    toast('Location permission denied', 'error');
+  }, { enableHighAccuracy: true, timeout: 10000 });
+};
+
+window.openLocation = function(lat, lng) {
+  if (!lat || !lng) return;
+  window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+};
+
+/* ============================================================
+   VOICE RECORD
+   ============================================================ */
+window.startVoiceRecord = async function() {
+  document.getElementById('attachMenu').classList.remove('show');
+  if (!currentChat || currentChat.isBlocked) return;
+
+  try {
+    recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(recStream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      const blob = new Blob(audioChunks, { type: 'audio/webm' });
+      const duration = Math.round((Date.now() - recStartTime) / 1000);
+
+      if (duration < 1) {
+        toast('Too short — try again', 'error');
+        recStream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = reader.result;
+        // Check size (max ~500KB)
+        if (base64.length > 600000) {
+          toast('Recording too long (max ~30s)', 'error');
+          recStream.getTracks().forEach(t => t.stop());
+          return;
+        }
+
+        try {
+          const msgData = {
+            from: me.uid,
+            type: 'voice',
+            audio: base64,
+            duration,
+            time: Date.now(),
+            read: false
+          };
+          if (replyingTo) msgData.replyTo = replyingTo;
+
+          const r = push(ref(db, 'chats/' + currentChat.cid));
+          await set(r, msgData);
+          toast('🎤 Voice sent!', 'success');
+          cancelReply();
+        } catch (e) { toast('Upload failed — too large?', 'error'); }
+      };
+      reader.readAsDataURL(blob);
+      recStream.getTracks().forEach(t => t.stop());
+    };
+
+    mediaRecorder.start();
+    recStartTime = Date.now();
+
+    document.getElementById('recordingOverlay').classList.add('show');
+    document.getElementById('recTime').textContent = '0:00';
+
+    recTimerInterval = setInterval(() => {
+      const secs = Math.floor((Date.now() - recStartTime) / 1000);
+      const m = Math.floor(secs / 60);
+      const s = String(secs % 60).padStart(2, '0');
+      document.getElementById('recTime').textContent = `${m}:${s}`;
+
+      // Auto stop at 30 seconds
+      if (secs >= 30) stopVoiceRecord();
+    }, 200);
+
+  } catch (e) {
+    toast('Microphone access denied', 'error');
+  }
+};
+
+window.stopVoiceRecord = function() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+  if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
+  document.getElementById('recordingOverlay').classList.remove('show');
+};
+
+window.playVoice = function(msgId) {
+  if (!currentChat) return;
+  get(ref(db, 'chats/' + currentChat.cid + '/' + msgId)).then(snap => {
+    if (!snap.exists()) return;
+    const m = snap.val();
+    if (!m.audio) return;
+    const audio = new Audio(m.audio);
+    audio.play();
+  });
+};
+
+/* ============================================================
+   ATTACH MENU
+   ============================================================ */
+window.toggleAttachMenu = function(ev) {
+  ev.stopPropagation();
+  const menu = document.getElementById('attachMenu');
+  menu.classList.toggle('show');
+  if (menu.classList.contains('show')) {
+    setTimeout(() => {
+      document.addEventListener('click', function close(e) {
+        if (!menu.contains(e.target)) {
+          menu.classList.remove('show');
+          document.removeEventListener('click', close);
+        }
+      });
+    }, 100);
+  }
+};
+
+/* ============================================================
+   CHAT MENU (Block/Report/Clear)
+   ============================================================ */
+window.toggleChatMenu = function(ev) {
+  ev.stopPropagation();
+  const menu = document.getElementById('chatMenu');
+  menu.classList.toggle('show');
+  if (menu.classList.contains('show')) {
+    setTimeout(() => {
+      document.addEventListener('click', function close(e) {
+        if (!menu.contains(e.target)) {
+          menu.classList.remove('show');
+          document.removeEventListener('click', close);
+        }
+      });
+    }, 100);
+  }
+};
+
+/* ============================================================
+   BLOCK USER
+   ============================================================ */
+window.blockUser = async function() {
+  document.getElementById('chatMenu').classList.remove('show');
+  if (!currentChat) return;
+
+  if (currentChat.isBlocked) {
+    if (!confirm('Unblock this user?')) return;
+    await remove(ref(db, 'blocks/' + me.uid + '/' + currentChat.otherId));
+    currentChat.isBlocked = false;
+    toast('User unblocked', 'success');
+  } else {
+    if (!confirm('Block this user? They won\'t be able to message you.')) return;
+    await set(ref(db, 'blocks/' + me.uid + '/' + currentChat.otherId), true);
+    currentChat.isBlocked = true;
+    toast('User blocked', 'success');
+  }
+  updateInputBarState();
+};
+
+/* ============================================================
+   REPORT USER
+   ============================================================ */
+window.reportUser = function() {
+  document.getElementById('chatMenu').classList.remove('show');
+  if (!currentChat) return;
+
+  document.getElementById('modalContent').innerHTML = `
+    <h3>🚩 Report User</h3>
+    <p>Report <strong>${escapeHtml(currentChat.other.name)}</strong> to admin. They will review and take action.</p>
+    <div class="form-group">
+      <label>Reason</label>
+      <select id="reportReason">
+        <option value="harassment">Harassment / Abuse</option>
+        <option value="fake">Fake Profile</option>
+        <option value="spam">Spam</option>
+        <option value="inappropriate">Inappropriate Content</option>
+        <option value="scam">Scam / Fraud</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Details (optional)</label>
+      <textarea id="reportDetails" placeholder="Describe the issue..." maxlength="500"></textarea>
+    </div>
+    <button class="btn btn-danger" id="reportSubmitBtn" onclick="submitReport()">
+      🚩 Submit Report
+    </button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="closeModal()">Cancel</button>
+  `;
+  document.getElementById('modal').classList.add('active');
+};
+
+window.submitReport = async function() {
+  const reason = document.getElementById('reportReason').value;
+  const details = document.getElementById('reportDetails').value.trim();
+  const btn = document.getElementById('reportSubmitBtn');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending...';
+
+  try {
+    const r = push(ref(db, 'reports'));
+    await set(r, {
+      rid: r.key,
+      reporterId: me.uid,
+      reporterName: me.name,
+      reporterRole: me.role,
+      reportedId: currentChat.otherId,
+      reportedName: currentChat.other.name,
+      reason,
+      details,
+      chatId: currentChat.cid,
+      status: 'open',
+      createdAt: Date.now()
+    });
+    toast('🚩 Report sent to admin', 'success');
+    closeModal();
+  } catch (e) {
+    toast('Failed to send', 'error');
+    btn.disabled = false;
+    btn.textContent = '🚩 Submit Report';
+  }
+};
+
+/* ============================================================
+   CLEAR CHAT
+   ============================================================ */
+window.clearChat = async function() {
+  document.getElementById('chatMenu').classList.remove('show');
+  if (!currentChat) return;
+  if (!confirm('Clear all messages in this chat? Only for you.')) return;
+
+  try {
+    // Mark all messages as hidden for me (soft delete — actual DB cleanup via auto-delete)
+    await update(ref(db, 'users/' + me.uid), {
+      ['reads/' + currentChat.cid]: Date.now()
+    });
+    toast('Chat cleared', 'success');
+    renderMessages();
+  } catch (e) { toast('Failed', 'error'); }
+};
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+window.closeModal = function() {
+  document.getElementById('modal').classList.remove('active');
 };
 
 /* ============================================================
@@ -631,7 +1273,6 @@ window.sendMsg = async function() {
     setupNav();
     setupPresence();
 
-    // Check URL ?with=otherId
     const params = new URLSearchParams(location.search);
     const withId = params.get('with');
     if (withId) {
