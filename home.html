@@ -3,149 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#ff2e63">
-<title>Home — PlayBoy Rentals</title>
+<meta name="theme-color" content="#000000">
+<title>VELORA-Boy — Find Your Match</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --primary:#ff2e63; --primary-dark:#c70039; --gold:#ffd700;
-  --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#2a2a3e; --border:#2a2a3e;
-  --text:#fff; --muted:#888; --success:#00b894; --danger:#e74c3c;
-  --warning:#f39c12; --online:#25d366; --radius:14px;
+  --primary:#ff2e63; --primary-dark:#c70039; --gold:#facc15; --gold-light:#fef08a;
+  --bg:#000000; --bg2:#111111; --bg3:#222222; --border:#333333;
+  --text:#ffffff; --muted:#aaaaaa; --success:#00b894; --online:#25d366;
 }
 html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;
-  padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+  padding-bottom:calc(80px + env(safe-area-inset-bottom));overflow-x:hidden}
+
+/* LOADER */
 .loader{position:fixed;inset:0;background:var(--bg);z-index:9999;
   display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
-.spinner{width:44px;height:44px;border:4px solid var(--bg3);border-top-color:var(--primary);
+.spinner{width:44px;height:44px;border:4px solid var(--bg3);border-top-color:var(--gold);
   border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader p{color:var(--muted);font-size:13px}
 
-.topnav{position:sticky;top:0;z-index:50;
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-  padding-top:calc(14px + env(safe-area-inset-top))}
-.topnav h1{font-size:18px;font-weight:700}
-.topnav h1 span{color:var(--gold)}
-.topnav button{background:rgba(255,255,255,.2);border:none;color:#fff;
-  width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer}
+/* TOP NAV */
+.topnav{position:sticky;top:0;z-index:50;background:var(--bg);
+  padding:15px 20px;display:flex;align-items:center;justify-content:space-between;
+  padding-top:calc(15px + env(safe-area-inset-top))}
+.topnav .logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
+.topnav .logo span{color:var(--primary);font-family:cursive}
+.topnav .logo-v{color:var(--gold);border:2px solid var(--gold);border-radius:8px;
+  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  font-family:Georgia,serif;font-style:italic;font-size:20px}
+.topnav .filter-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer}
 
-.container{max-width:640px;margin:0 auto;padding:20px 16px}
-.section-title{font-size:18px;font-weight:700;margin-bottom:14px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px}
-.online-count{font-size:11px;color:var(--online);font-weight:600;
-  background:rgba(37,211,102,.15);padding:3px 10px;border-radius:12px}
-
-.search-bar{margin-bottom:12px;position:relative}
-.search-bar input{width:100%;padding:12px 16px 12px 44px;
-  background:var(--bg2);border:1.5px solid var(--border);color:#fff;
-  border-radius:12px;font-size:15px;font-family:inherit;transition:.2s}
-.search-bar input:focus{outline:none;border-color:var(--primary)}
-.search-bar::before{content:'🔍';position:absolute;left:16px;top:50%;
-  transform:translateY(-50%);font-size:16px;pointer-events:none}
-
-.filter-bar{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px;
-  scrollbar-width:none}
+/* SEARCH & FILTER (Toggleable) */
+#searchContainer{padding:0 20px 15px; display:none}
+#searchContainer.active{display:block}
+.search-bar input{width:100%;padding:12px 16px;background:var(--bg2);
+  border:1px solid var(--border);color:#fff;border-radius:12px;font-size:14px;font-family:inherit}
+.search-bar input:focus{outline:none;border-color:var(--gold)}
+.filter-bar{display:flex;gap:8px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
 .filter-bar::-webkit-scrollbar{display:none}
-.chip{padding:7px 14px;background:var(--bg2);border:1px solid var(--border);color:#fff;
-  border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;
-  font-family:inherit;transition:.2s}
-.chip.active{background:var(--primary);border-color:var(--primary)}
+.chip{padding:6px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);
+  border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.chip.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
 
-.pb-card{margin-bottom:14px;padding:16px;background:var(--bg2);border-radius:14px;
-  border:1px solid var(--border);display:flex;gap:14px;cursor:pointer;transition:.2s}
-.pb-card:hover{border-color:rgba(255,46,99,.4)}
-.pb-card:active{transform:scale(.98)}
+/* HERO BANNER */
+.hero-banner{margin:0 20px;border-radius:20px;height:220px;position:relative;
+  background:url('https://plus.unsplash.com/premium_photo-1726862576204-840821ed179a?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D=format&fit=crop') center/cover;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);overflow:hidden}
+.hero-banner::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%)}
+.hero-content{position:relative;z-index:2;padding:20px;height:100%;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.hero-content h2{font-size:26px;line-height:1.1;margin:0 0 8px;font-weight:800;color:#fff}
+.hero-content p{font-size:12px;color:#ccc;margin:0 0 15px;line-height:1.4}
+.btn-get-started{background:var(--gold);color:#000;border:none;padding:10px 18px;
+  border-radius:30px;font-weight:700;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;transition:.2s}
+.btn-get-started:active{transform:scale(.95)}
 
-.pb-av-wrap{position:relative;flex-shrink:0}
-.pb-avatar{width:70px;height:70px;border-radius:50%;
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  display:flex;align-items:center;justify-content:center;font-size:30px;
-  border:2px solid var(--gold);overflow:hidden}
-.pb-avatar img{width:100%;height:100%;object-fit:cover}
-.online-dot{position:absolute;bottom:2px;right:2px;width:14px;height:14px;
-  border-radius:50%;background:var(--online);border:2.5px solid var(--bg2);
-  box-shadow:0 0 8px rgba(37,211,102,.6)}
+/* CATEGORY GRID */
+.category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  padding:20px;margin-bottom:5px}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+.cat-icon{width:65px;height:65px;border-radius:18px;display:flex;
+  align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
+.cat-icon.pink{background:#ff2e63}
+.cat-icon.dark{background:var(--bg2)}
+.cat-item span{font-size:12px;color:#fff;font-weight:500}
 
-.pb-info{flex:1;min-width:0}
-.pb-info h3{font-size:16px;margin-bottom:4px;display:flex;align-items:center;
-  gap:6px;flex-wrap:wrap}
-.pb-info .rate{color:var(--gold);font-weight:700;font-size:15px;margin-bottom:3px}
-.pb-info .bio{color:var(--muted);font-size:12px;margin-top:4px;
-  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical;line-clamp:2;line-height:1.4}
-.pb-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;font-size:11px;color:var(--muted)}
+/* POPULAR PROFILES */
+.section-header{display:flex;justify-content:space-between;align-items:center;
+  padding:0 20px;margin-bottom:15px}
+.section-header h3{margin:0;font-size:18px;font-weight:700;color:#fff}
+.section-header span{font-size:13px;color:var(--muted);cursor:pointer}
+.section-header span:active{color:#fff}
 
-.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;
-  font-weight:700;background:var(--success);color:#fff;letter-spacing:.3px}
-.badge.online-badge{background:var(--online)}
-.badge.new-badge{background:var(--warning);color:#000}
-.badge.rating-badge{background:var(--gold);color:#000}
+.profile-scroll{display:flex;overflow-x:auto;gap:12px;padding:0 20px 20px;
+  scrollbar-width:none;align-items:flex-start}
+.profile-scroll::-webkit-scrollbar{display:none}
 
-.empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
-.empty .big{font-size:52px;display:block;margin-bottom:12px;opacity:.5}
+.profile-card{flex:0 0 135px;border-radius:16px;overflow:hidden;background:var(--bg2);
+  cursor:pointer;position:relative;border:1px solid var(--border);transition:.2s}
+.profile-card:active{transform:scale(.97)}
+.profile-card .img-wrap{position:relative;height:170px;width:100%}
+.profile-card img{width:100%;height:100%;object-fit:cover}
+.profile-card .no-photo{width:100%;height:100%;display:flex;align-items:center;
+  justify-content:center;font-size:40px;color:#444;background:#222}
+.profile-card .heart-btn{position:absolute;bottom:8px;right:8px;
+  background:var(--primary);color:#fff;border:none;width:26px;height:26px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;cursor:pointer;padding:0}
+.profile-card .card-info{padding:10px;background:var(--bg2)}
+.profile-card .card-info h4{margin:0 0 3px;font-size:14px;font-weight:600;color:#fff}
+.profile-card .card-info p{margin:0;font-size:11px;color:var(--muted);
+  display:flex;align-items:center;gap:4px}
+.profile-card .card-info p .dot{width:6px;height:6px;background:var(--online);border-radius:50%}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);
-  border-top:1px solid var(--border);display:flex;
-  padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:40}
-.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  text-decoration:none;color:var(--muted);font-size:11px;padding:6px 0;cursor:pointer}
-.bottom-nav a .icon{font-size:20px}
-.bottom-nav a.active{color:var(--primary)}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;
+  display:flex;justify-content:space-around;padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:#666;font-size:11px;cursor:pointer;text-decoration:none}
+.nav-item.active{color:var(--gold)}
+.nav-item .icon{font-size:24px}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;
-  display:none;align-items:flex-end;justify-content:center}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;
+  display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
-.modal{background:var(--bg2);width:100%;max-width:480px;
-  border-radius:20px 20px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));
-  max-height:90vh;overflow-y:auto;animation:slideUp .3s ease}
+.modal{background:var(--bg2);width:100%;max-width:480px;border-radius:20px 20px 0 0;
+  padding:24px 20px calc(24px + env(safe-area-inset-bottom));max-height:90vh;overflow-y:auto;
+  animation:slideUp .3s ease;border-top:2px solid var(--gold)}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-handle{width:40px;height:4px;background:#444;border-radius:2px;margin:0 auto 16px}
-.modal h3{font-size:18px;margin-bottom:16px;color:var(--primary)}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+.modal h3{font-size:18px;margin-bottom:16px;color:var(--gold)}
 
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-input,textarea{width:100%;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);
+input,textarea{width:100%;padding:13px 16px;background:#000;border:1.5px solid var(--border);
   color:#fff;border-radius:10px;font-size:15px;font-family:inherit;transition:.2s}
-input:focus,textarea:focus{outline:none;border-color:var(--primary)}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
 textarea{resize:vertical;min-height:70px}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:12px 20px;border:none;border-radius:10px;cursor:pointer;
-  font-size:15px;font-weight:600;transition:all .2s;text-decoration:none;
-  width:100%;font-family:inherit;color:#fff}
+  font-size:15px;font-weight:700;transition:all .2s;width:100%;font-family:inherit;color:#fff}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.6;cursor:not-allowed}
-.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  box-shadow:0 4px 20px rgba(255,46,99,.35)}
+.btn-primary{background:var(--gold);color:#000;box-shadow:0 4px 15px rgba(250,204,21,.3)}
 .btn-ghost{background:var(--bg3);color:#fff}
 .btn-lg{padding:15px 24px;font-size:16px}
 
 .modal-profile-head{text-align:center;margin-bottom:16px}
 .modal-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 12px;
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  display:flex;align-items:center;justify-content:center;font-size:40px;
-  border:3px solid var(--gold);overflow:hidden;position:relative}
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  font-size:40px;border:3px solid var(--gold);overflow:hidden;position:relative}
 .modal-avatar img{width:100%;height:100%;object-fit:cover}
-.modal-avatar .online-dot{width:16px;height:16px;bottom:3px;right:3px}
+.modal-avatar .online-dot{width:16px;height:16px;bottom:3px;right:3px;
+  position:absolute;background:var(--online);border-radius:50%;border:2.5px solid var(--bg2)}
 .modal-name{display:flex;align-items:center;justify-content:center;gap:6px;
-  font-size:18px;font-weight:700;margin-bottom:4px;flex-wrap:wrap}
-.modal-rate{color:var(--gold);font-weight:700;font-size:18px}
+  font-size:18px;font-weight:800;margin-bottom:4px;flex-wrap:wrap;color:#fff}
+.modal-rate{color:var(--gold);font-weight:800;font-size:18px}
 .modal-rating-line{color:var(--gold);font-weight:700;font-size:14px;margin-top:6px}
 .modal-meta{color:var(--muted);font-size:13px;margin-top:4px}
 
 .reviews-section{margin:16px 0}
-.reviews-header{display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:10px}
-.reviews-header strong{font-size:14px}
-.reviews-avg{color:var(--gold);font-weight:700;font-size:13px}
-.review-item{background:var(--bg3);padding:10px 12px;border-radius:8px;margin-bottom:8px}
-.review-item .review-head{display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:5px}
-.review-item .review-name{font-size:12px;font-weight:600}
+.reviews-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.reviews-header strong{font-size:14px;color:var(--gold)}
+.reviews-avg{color:var(--gold);font-weight:800;font-size:13px}
+.review-item{background:#000;padding:10px 12px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border)}
+.review-item .review-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.review-item .review-name{font-size:12px;font-weight:600;color:#fff}
 .review-item .review-stars{color:var(--gold);font-size:12px}
 .review-item .review-text{font-size:12px;color:var(--muted);line-height:1.4}
 .review-item .review-date{font-size:10px;color:#555;margin-top:5px}
@@ -153,51 +162,89 @@ textarea{resize:vertical;min-height:70px}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
   background:var(--bg3);color:#fff;padding:13px 24px;border-radius:30px;
   font-size:14px;font-weight:500;z-index:9999;max-width:90vw;text-align:center;
-  box-shadow:0 8px 30px rgba(0,0,0,.4);animation:toastIn .3s;
-  border:1px solid var(--border)}
+  box-shadow:0 8px 30px rgba(0,0,0,.6);animation:toastIn .3s;border:1px solid var(--border)}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
 .toast.success{border-color:var(--success)}
-.toast.error{border-color:var(--danger)}
+.toast.error{border-color:var(--primary)}
 
-.hidden{display:none!important}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;width:100%}
+.empty .big{font-size:48px;display:block;margin-bottom:12px;opacity:.5}
 </style>
 </head>
 <body>
 
 <div class="loader" id="loader">
   <div class="spinner"></div>
-  <p>Loading...</p>
+  <p>Loading VELORA-Boy...</p>
 </div>
 
+<!-- TOP NAV -->
 <div class="topnav">
-  <h1>Play<span>Boy</span> 💋</h1>
-  <button onclick="logout()">⏻</button>
+  <div class="logo">
+    <div class="logo-v">V</div> VELORA-<span>Boy</span>
+  </div>
+  <button class="filter-btn" onclick="toggleSearch()">⚙️</button>
 </div>
 
-<div class="container">
-  <div class="section-title">
-    <span>🔥 Available <span style="color:var(--primary)">Companions</span></span>
-    <span class="online-count" id="onlineCount" style="display:none">0 online</span>
-  </div>
-
+<!-- SEARCH & FILTER (Hidden by default) -->
+<div id="searchContainer">
   <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search by name, city..."
-           oninput="applyFilters()">
+    <input type="text" id="searchInput" placeholder="Search by name, city..." oninput="applyFilters()">
   </div>
-
   <div class="filter-bar">
     <button class="chip active" data-sort="newest" onclick="setSort(this,'newest')">🆕 Newest</button>
     <button class="chip" data-sort="rate-low" onclick="setSort(this,'rate-low')">💰 Rate ↑</button>
     <button class="chip" data-sort="rate-high" onclick="setSort(this,'rate-high')">💎 Rate ↓</button>
     <button class="chip" data-sort="rating" onclick="setSort(this,'rating')">⭐ Top Rated</button>
-    <button class="chip" data-sort="online" onclick="setSort(this,'online')">🟢 Online First</button>
+    <button class="chip" data-sort="online" onclick="setSort(this,'online')">🟢 Online</button>
   </div>
-
-  <div id="list"></div>
 </div>
 
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <div class="hero-content">
+    <h2>Find Your<br>Perfect Match</h2>
+    <p>Premium Companionship<br>Just a Tap Away</p>
+    <button class="btn-get-started" onclick="scrollToProfiles()">
+      Get Started <span style="font-size:16px">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="category-grid">
+  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
+    <div class="cat-icon pink">❤️</div>
+    <span>Explore</span>
+  </div>
+  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
+    <div class="cat-icon dark">📸</div>
+    <span>Live</span>
+  </div>
+  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
+    <div class="cat-icon dark">🛡️</div>
+    <span>Private</span>
+  </div>
+  <div class="cat-item" onclick="toast('Coming soon!', 'error')">
+    <div class="cat-icon dark">👑</div>
+    <span>Premium</span>
+  </div>
+</div>
+
+<!-- POPULAR PROFILES -->
+<div class="section-header" id="popularProfiles">
+  <h3>Popular Profiles</h3>
+  <span onclick="toggleSearch()">See All →</span>
+</div>
+
+<div class="profile-scroll" id="list">
+  <!-- Cards injected here -->
+</div>
+
+<!-- BOTTOM NAV -->
 <div class="bottom-nav" id="nav"></div>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modalContent"></div>
 </div>
@@ -238,6 +285,7 @@ function toast(msg, type) {
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2800);
 }
+window.toast = toast;
 
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c =>
@@ -246,7 +294,7 @@ function escapeHtml(s) {
 
 function avatarHTML(user) {
   if (user.photo) return `<img src="${user.photo}">`;
-  return user.role === 'playboy' ? '👨' : '👤';
+  return '👨';
 }
 
 function formatLastSeen(ts) {
@@ -268,27 +316,40 @@ function starsStr(n) {
 window.logout = function() {
   if (!confirm('Logout?')) return;
   localStorage.removeItem('currentUser');
-  window.location.href = 'index.html';
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location.replace('index.html?logout=1');
+};
+
+window.toggleSearch = function() {
+  const el = document.getElementById('searchContainer');
+  el.classList.toggle('active');
+  if (el.classList.contains('active')) {
+    document.getElementById('searchInput').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+window.scrollToProfiles = function() {
+  document.getElementById('popularProfiles').scrollIntoView({ behavior: 'smooth' });
 };
 
 window.closeModal = function() { document.getElementById('modal').classList.remove('active'); };
 
 function setupNav() {
   document.getElementById('nav').innerHTML = `
-    <a class="active" onclick="location.href='home.html'">
+    <a class="nav-item active" onclick="location.href='home.html'">
       <span class="icon">🏠</span><span>Home</span></a>
-    <a onclick="location.href='chat.html'">
+    <a class="nav-item" onclick="location.href='chat.html'">
       <span class="icon">💬</span><span>Chat</span></a>
-    <a onclick="location.href='bookings.html'">
-      <span class="icon">📋</span><span>Bookings</span></a>
-    <a onclick="location.href='support.html'">
+    <a class="nav-item" onclick="location.href='bookings.html'">
+      <span class="icon">📋</span><span>My Bookings</span></a>
+     <a class="nav-item" onclick="location.href='support.html'">
       <span class="icon">🛟</span><span>Support</span></a>
+    
   `;
 }
 
-/* ============================================================
-   REALTIME LISTENERS
-   ============================================================ */
 function startRealtimeListeners() {
   if (usersUnsub) usersUnsub();
   usersUnsub = onValue(ref(db, 'users'), snap => {
@@ -321,9 +382,6 @@ window.applyFilters = function() {
   renderList();
 };
 
-/* ============================================================
-   RENDER LIST
-   ============================================================ */
 function renderList() {
   const box = document.getElementById('list');
   if (!me) return;
@@ -340,15 +398,6 @@ function renderList() {
     );
   }
 
-  const onlineCount = list.filter(p => allPresence[p.uid] && allPresence[p.uid].online).length;
-  const countEl = document.getElementById('onlineCount');
-  if (onlineCount > 0) {
-    countEl.style.display = 'inline-block';
-    countEl.textContent = onlineCount + ' online';
-  } else {
-    countEl.style.display = 'none';
-  }
-
   list.sort((a, b) => {
     if (sortMode === 'rate-low') return (a.rate || 0) - (b.rate || 0);
     if (sortMode === 'rate-high') return (b.rate || 0) - (a.rate || 0);
@@ -363,50 +412,25 @@ function renderList() {
   });
 
   if (!list.length) {
-    if (searchQuery) {
-      box.innerHTML = `<div class="empty"><span class="big">🔍</span>No results for "${escapeHtml(searchQuery)}"</div>`;
-    } else {
-      box.innerHTML = '<div class="empty"><span class="big">😕</span>No verified companions available<br><small>Check back soon</small></div>';
-    }
+    box.innerHTML = `<div class="empty"><span class="big">🔍</span>No profiles found</div>`;
     return;
   }
 
-  const now = Date.now();
   box.innerHTML = list.map(p => {
-    const presence = allPresence[p.uid] || {};
-    const isOnline = presence.online === true;
-    const isNew = (now - (p.createdAt || 0)) < 7 * 24 * 60 * 60 * 1000;
-    const lastSeenText = !isOnline && presence.lastSeen
-      ? formatLastSeen(presence.lastSeen) : '';
-
-    return `<div class="pb-card" onclick="openCard('${p.uid}')">
-      <div class="pb-av-wrap">
-        <div class="pb-avatar">${avatarHTML(p)}</div>
-        ${isOnline ? '<div class="online-dot"></div>' : ''}
+    const isOnline = allPresence[p.uid]?.online === true;
+    return `<div class="profile-card" onclick="openCard('${p.uid}')">
+      <div class="img-wrap">
+        ${p.photo ? `<img src="${p.photo}">` : `<div class="no-photo">👨</div>`}
+        <button class="heart-btn" onclick="event.stopPropagation()">❤️</button>
       </div>
-      <div class="pb-info">
-        <h3>
-          ${escapeHtml(p.name)}
-          <span class="badge">✓ VERIFIED</span>
-          ${isOnline ? '<span class="badge online-badge">● ONLINE</span>' : ''}
-          ${isNew && !isOnline ? '<span class="badge new-badge">NEW</span>' : ''}
-          ${p.avgRating > 0 ? `<span class="badge rating-badge">⭐ ${p.avgRating} (${p.totalReviews || 0})</span>` : ''}
-        </h3>
-        <div class="rate">₹${p.rate}/hour</div>
-        <div class="bio">${escapeHtml(p.bio || 'No bio')}</div>
-        <div class="pb-meta">
-          ${p.city ? `<span>📍 ${escapeHtml(p.city)}</span>` : ''}
-          ${p.age ? `<span>🎂 ${p.age}</span>` : ''}
-          ${lastSeenText ? `<span style="color:#666">⏱ ${lastSeenText}</span>` : ''}
-        </div>
+      <div class="card-info">
+        <h4>${escapeHtml(p.name)}</h4>
+        <p>${isOnline ? '<span class="dot"></span> Online' : 'Offline'}</p>
       </div>
     </div>`;
   }).join('');
 }
 
-/* ============================================================
-   OPEN PROFILE MODAL
-   ============================================================ */
 window.openCard = async function(uid) {
   const snap = await get(ref(db, 'users/' + uid));
   if (!snap.exists()) return toast('User not found', 'error');
@@ -414,7 +438,6 @@ window.openCard = async function(uid) {
   const presence = allPresence[uid] || {};
   const isOnline = presence.online === true;
 
-  // Get reviews for this playboy
   const pReviews = Object.values(allReviews || {})
     .filter(r => r.playboyId === uid)
     .sort((a, b) => b.createdAt - a.createdAt);
@@ -460,21 +483,21 @@ window.openCard = async function(uid) {
       </div>
     </div>
 
-    <div style="background:var(--bg3);padding:14px;border-radius:10px;margin-bottom:16px;
-                font-size:13px;line-height:1.5">${escapeHtml(p.bio || 'No bio')}</div>
+    <div style="background:#000;border:1px solid var(--border);padding:14px;border-radius:10px;margin-bottom:16px;
+                font-size:13px;line-height:1.5;color:var(--muted)">${escapeHtml(p.bio || 'No bio')}</div>
 
     ${p.services ? `<div style="margin-bottom:12px">
-      <strong style="font-size:13px">💼 Services:</strong><br>
+      <strong style="font-size:13px;color:var(--gold)">💼 Services:</strong><br>
       <span style="font-size:13px;color:var(--muted)">${escapeHtml(p.services)}</span>
     </div>` : ''}
 
     ${p.hours ? `<div style="margin-bottom:12px">
-      <strong style="font-size:13px">🕐 Available:</strong><br>
+      <strong style="font-size:13px;color:var(--gold)">🕐 Available:</strong><br>
       <span style="font-size:13px;color:var(--muted)">${escapeHtml(p.hours)}</span>
     </div>` : ''}
 
     ${p.lang ? `<div style="margin-bottom:12px">
-      <strong style="font-size:13px">🗣 Languages:</strong><br>
+      <strong style="font-size:13px;color:var(--gold)">🗣 Languages:</strong><br>
       <span style="font-size:13px;color:var(--muted)">${escapeHtml(p.lang)}</span>
     </div>` : ''}
 
@@ -488,7 +511,7 @@ window.openCard = async function(uid) {
     <div class="form-group"><label>📝 Note (optional)</label>
       <textarea id="bk-note" placeholder="Any special request..."></textarea></div>
 
-    <div style="color:var(--gold);font-weight:700;text-align:center;margin:12px 0;
+    <div style="color:var(--gold);font-weight:800;text-align:center;margin:12px 0;
                 font-size:18px" id="bk-total">Total: ₹${p.rate * 2}</div>
 
     <button class="btn btn-primary btn-lg" id="bookBtn" onclick="bookNow('${p.uid}')">
@@ -558,36 +581,33 @@ window.openChatWith = function(otherId) {
   window.location.href = 'chat.html?with=' + otherId;
 };
 
-/* ============================================================
-   INIT
-   ============================================================ */
 (async function init() {
   await new Promise(r => setTimeout(r, 300));
   document.getElementById('loader').style.display = 'none';
 
   const saved = localStorage.getItem('currentUser');
-  if (!saved) { window.location.href = 'index.html'; return; }
+  if (!saved) { window.location.replace('index.html'); return; }
 
   try {
     const ref_ = JSON.parse(saved);
     const snap = await get(ref(db, 'users/' + ref_.uid));
     if (!snap.exists()) {
       localStorage.removeItem('currentUser');
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
       return;
     }
     me = snap.val();
-    if (me.role !== 'customer') { window.location.href = 'profile.html'; return; }
+    if (me.role !== 'customer') { window.location.replace('profile.html'); return; }
     if (me.status === 'blocked') {
       localStorage.removeItem('currentUser');
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
       return;
     }
 
     setupNav();
     startRealtimeListeners();
   } catch (e) {
-    window.location.href = 'index.html';
+    window.location.replace('index.html');
   }
 })();
 </script>
