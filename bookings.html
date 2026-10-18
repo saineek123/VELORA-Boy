@@ -215,8 +215,12 @@ function escapeHtml(s) {
 
 window.logout = function() {
   if (!confirm('Logout?')) return;
+  // Clear ALL session data
   localStorage.removeItem('currentUser');
-  window.location.href = 'index.html';
+  localStorage.clear();        // ← Safety
+  sessionStorage.clear();      // ← Safety
+  // Force hard redirect with cache bypass
+  window.location.replace('index.html?logout=1');
 };
 
 function setupNav() {
