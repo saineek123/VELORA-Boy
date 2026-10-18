@@ -4,23 +4,111 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="theme-color" content="#ff2e63">
-<title>Login / Register — PlayBoy Rentals</title>
+<title>My Profile — PlayBoy Rentals</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --primary:#ff2e63; --primary-dark:#c70039; --gold:#ffd700;
   --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#2a2a3e; --border:#2a2a3e;
   --text:#fff; --muted:#888; --success:#00b894; --danger:#e74c3c;
-  --warning:#f39c12; --info:#3498db; --radius:14px;
+  --warning:#f39c12; --radius:14px;
 }
 html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5}
+  background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 .loader{position:fixed;inset:0;background:var(--bg);z-index:9999;
   display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .spinner{width:44px;height:44px;border:4px solid var(--bg3);border-top-color:var(--primary);
   border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader p{color:var(--muted);font-size:13px}
+
+.topnav{position:sticky;top:0;z-index:50;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  padding-top:calc(14px + env(safe-area-inset-top))}
+.topnav h1{font-size:18px;font-weight:700}
+.topnav h1 span{color:var(--gold)}
+.topnav button{background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer}
+
+.container{max-width:640px;margin:0 auto;padding:20px 16px}
+.section-title{font-size:18px;font-weight:700;margin-bottom:14px}
+.section-title span{color:var(--primary)}
+
+.profile-head{display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:24px;background:var(--bg2);border-radius:14px;
+  border:1px solid var(--border);margin-bottom:20px}
+.profile-avatar{width:90px;height:90px;border-radius:50%;margin-bottom:12px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+  border:3px solid var(--gold);position:relative;overflow:hidden}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-avatar .tick{position:absolute;bottom:0;right:0;background:var(--success);
+  color:#fff;width:26px;height:26px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;font-size:13px;border:2px solid var(--bg2)}
+.profile-head h2{font-size:20px;margin-bottom:4px}
+.profile-head .username{color:var(--muted);font-size:13px}
+.profile-head .rate-tag{color:var(--gold);font-weight:700;font-size:16px;margin-top:8px}
+
+.rating-line{display:flex;align-items:center;gap:6px;margin-top:8px;
+  background:rgba(255,215,0,.1);padding:6px 14px;border-radius:20px}
+.rating-line .stars{color:var(--gold);font-size:16px;letter-spacing:1px}
+.rating-line .rating-num{color:var(--gold);font-weight:700;font-size:15px}
+.rating-line .rating-count{color:var(--muted);font-size:12px}
+
+/* REFERRAL CARD */
+.referral-card{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.05));
+  border:1.5px dashed rgba(255,215,0,.5);border-radius:14px;padding:16px;
+  margin-top:14px;width:100%}
+.referral-card .ref-label{font-size:11px;color:var(--gold);text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:10px;font-weight:700;text-align:center}
+.referral-card .ref-row{display:flex;align-items:center;gap:8px}
+.referral-card .ref-code{flex:1;background:var(--bg);padding:12px 14px;border-radius:10px;
+  font-family:'Courier New',monospace;font-size:17px;font-weight:800;
+  color:var(--gold);letter-spacing:3px;text-align:center;
+  border:1px solid rgba(255,215,0,.3)}
+.referral-card .ref-copy{background:var(--gold);color:#000;border:none;
+  padding:12px 16px;border-radius:10px;font-weight:700;cursor:pointer;
+  font-family:inherit;font-size:13px;white-space:nowrap}
+.referral-card .ref-copy:active{transform:scale(.95)}
+.referral-card .ref-hint{font-size:11px;color:var(--muted);margin-top:10px;
+  text-align:center;line-height:1.4}
+
+/* SHARE BUTTONS */
+.share-buttons{display:flex;gap:8px;margin-top:12px;width:100%}
+.share-btn{flex:1;border:none;padding:13px;border-radius:10px;font-weight:600;
+  cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;
+  justify-content:center;gap:6px;transition:.2s;color:#fff}
+.share-btn:active{transform:scale(.96)}
+.share-btn.wa{background:#25d366;box-shadow:0 4px 15px rgba(37,211,102,.3)}
+.share-btn.copy{background:var(--bg3);border:1px solid var(--border)}
+
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;
+  margin-top:10px;text-transform:uppercase;letter-spacing:.5px}
+.badge.verified{background:var(--success);color:#fff}
+.badge.pending{background:var(--warning);color:#000}
+.badge.rejected{background:var(--danger);color:#fff}
+.badge.blocked{background:#444;color:#fff}
+
+.steps-bar{display:flex;gap:6px;margin-bottom:20px}
+.steps-bar .step{flex:1;height:4px;background:var(--bg3);border-radius:2px;transition:.3s}
+.steps-bar .step.active{background:var(--primary)}
+.steps-bar .step.done{background:var(--success)}
+.step-page{display:none}.step-page.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.form-group label .req{color:var(--primary)}
+input,select,textarea{width:100%;padding:13px 16px;background:var(--bg2);
+  border:1.5px solid var(--border);color:#fff;border-radius:10px;font-size:15px;
+  font-family:inherit;transition:border-color .2s;appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
+input::placeholder,textarea::placeholder{color:#555}
+textarea{resize:vertical;min-height:80px}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%23888' d='M6 9L1 4h10z'/></svg>");
+  background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:12px 20px;border:none;border-radius:10px;cursor:pointer;
@@ -33,44 +121,36 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .btn-ghost{background:var(--bg3);color:#fff}
 .btn-lg{padding:15px 24px;font-size:16px}
 
-.wrap{max-width:440px;margin:0 auto;padding:30px 20px 60px;min-height:100vh;
-  display:flex;flex-direction:column;justify-content:center}
-.logo-box{text-align:center;margin-bottom:30px}
-.logo-icon{font-size:56px;margin-bottom:8px}
-.logo-box h1{font-size:32px;font-weight:800;letter-spacing:-1px}
-.logo-box h1 span{color:var(--gold)}
-.logo-box p{color:var(--muted);font-size:13px;margin-top:4px}
+.upload-box{border:2px dashed var(--border);border-radius:12px;padding:22px;
+  text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px}
+.upload-box:active,.upload-box.has-file{border-color:var(--primary);background:rgba(255,46,99,.05)}
+.upload-box .icon{font-size:32px;display:block;margin-bottom:6px}
+.upload-box p{font-size:13px;color:var(--muted)}
+.upload-box .file-name{color:var(--success);font-size:13px;font-weight:600;margin-top:6px}
 
-.tabs{display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin-bottom:24px}
-.tabs button{flex:1;padding:12px;border:none;background:transparent;color:var(--muted);
-  font-size:14px;font-weight:600;cursor:pointer;border-radius:9px;font-family:inherit;
-  transition:.2s}
-.tabs button.active{background:var(--primary);color:#fff;box-shadow:0 2px 12px rgba(255,46,99,.4)}
+.photo-edit-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;
+  background:var(--bg2);padding:14px;border-radius:12px;border:1px solid var(--border)}
+.photo-edit-preview{width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  flex-shrink:0;overflow:hidden;border:2px solid var(--gold)}
+.photo-edit-preview img{width:100%;height:100%;object-fit:cover}
+.photo-edit-info{flex:1}
+.photo-edit-info h4{font-size:14px;margin-bottom:4px}
+.photo-edit-info p{font-size:12px;color:var(--muted);margin-bottom:8px}
+.photo-edit-btn{padding:7px 14px;background:var(--bg3);border:none;color:#fff;
+  border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.photo-edit-btn:active{transform:scale(.95)}
 
-.role-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.role-card{padding:16px 10px;background:var(--bg2);border:2px solid var(--border);
-  border-radius:12px;text-align:center;cursor:pointer;transition:all .2s}
-.role-card .icon{font-size:26px;display:block;margin-bottom:4px}
-.role-card .name{font-size:13px;font-weight:600}
-.role-card.active{border-color:var(--primary);background:rgba(255,46,99,.1)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);
+  border-top:1px solid var(--border);display:flex;
+  padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:40}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  text-decoration:none;color:var(--muted);font-size:11px;padding:6px 0;cursor:pointer}
+.bottom-nav a .icon{font-size:20px}
+.bottom-nav a.active{color:var(--primary)}
 
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500}
-.form-group label .req{color:var(--primary)}
-input{width:100%;padding:13px 16px;background:var(--bg2);border:1.5px solid var(--border);
-  color:#fff;border-radius:10px;font-size:15px;font-family:inherit;transition:.2s}
-input:focus{outline:none;border-color:var(--primary)}
-input::placeholder{color:#555}
-
-.check-row{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--muted);
-  margin:14px 0}
-.check-row input{width:18px;height:18px;margin-top:2px;flex-shrink:0}
-
-.divider{text-align:center;color:var(--muted);font-size:12px;margin:20px 0}
-.link{color:var(--primary);text-decoration:none;font-weight:600;cursor:pointer}
-
-.hidden{display:none!important}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
   background:var(--bg3);color:#fff;padding:13px 24px;border-radius:30px;
   font-size:14px;font-weight:500;z-index:9999;max-width:90vw;text-align:center;
   box-shadow:0 8px 30px rgba(0,0,0,.4);animation:toastIn .3s;
@@ -79,8 +159,7 @@ input::placeholder{color:#555}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--danger)}
 
-.admin-link{text-align:center;margin-top:24px;font-size:11px;color:#444}
-.admin-link a{color:var(--muted);text-decoration:none}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -90,73 +169,135 @@ input::placeholder{color:#555}
   <p>Loading...</p>
 </div>
 
-<div class="wrap" id="mainWrap" style="display:none">
-  <div class="logo-box">
-    <div class="logo-icon">💋</div>
-    <h1>Play<span>Boy</span></h1>
-    <p>Premium Companionship Platform</p>
-  </div>
+<div class="topnav">
+  <h1>My <span>Profile</span></h1>
+  <button onclick="logout()">⏻</button>
+</div>
 
-  <div class="tabs">
-    <button class="active" id="tabLoginBtn" onclick="switchTab('login')">Login</button>
-    <button id="tabSignupBtn" onclick="switchTab('signup')">Register</button>
-  </div>
+<div class="container">
+  <div id="profileBox"></div>
 
-  <!-- LOGIN -->
-  <div id="loginForm">
-    <div class="role-picker">
-      <div class="role-card active" data-role="customer" onclick="pickRole(this,'login')">
-        <span class="icon">👤</span><div class="name">Customer</div>
-      </div>
-      <div class="role-card" data-role="playboy" onclick="pickRole(this,'login')">
-        <span class="icon">👨</span><div class="name">PlayBoy</div>
-      </div>
-    </div>
-    <div class="form-group"><label>Username</label>
-      <input type="text" id="li-user" placeholder="Your username" autocapitalize="off"></div>
-    <div class="form-group"><label>Password</label>
-      <input type="password" id="li-pass" placeholder="Your password"
-             onkeypress="if(event.key==='Enter')doLogin()"></div>
-    <button class="btn btn-primary btn-lg" id="loginBtn" onclick="doLogin()">Login</button>
-  </div>
+  <div id="editMode" class="hidden">
+    <h2 class="section-title">Edit <span>Details</span></h2>
 
-  <!-- SIGNUP -->
-  <div id="signupForm" class="hidden">
-    <div class="role-picker">
-      <div class="role-card active" data-role="customer" onclick="pickRole(this,'signup')">
-        <span class="icon">👤</span><div class="name">Customer</div>
-      </div>
-      <div class="role-card" data-role="playboy" onclick="pickRole(this,'signup')">
-        <span class="icon">👨</span><div class="name">PlayBoy</div>
+    <div class="photo-edit-row">
+      <div class="photo-edit-preview" id="editPhotoPreview">👨</div>
+      <div class="photo-edit-info">
+        <h4>Profile Photo</h4>
+        <p>This will be visible to customers</p>
+        <button class="photo-edit-btn" onclick="document.getElementById('editPhotoInput').click()">
+          📷 Change Photo
+        </button>
+        <input type="file" id="editPhotoInput" accept="image/*" class="hidden"
+               onchange="handleEditPhoto(this)">
       </div>
     </div>
-    <div class="form-group"><label>Full Name <span class="req">*</span></label>
-      <input type="text" id="su-name" placeholder="Enter your full name"></div>
-    <div class="form-group"><label>Username <span class="req">*</span></label>
-      <input type="text" id="su-user" placeholder="Unique username" autocapitalize="off"></div>
-    <div class="form-group"><label>Phone Number <span class="req">*</span></label>
-      <input type="tel" id="su-phone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
-    <div class="form-group"><label>Email (optional)</label>
-      <input type="email" id="su-email" placeholder="you@example.com"></div>
-    <div class="form-group"><label>Password <span class="req">*</span></label>
-      <input type="password" id="su-pass" placeholder="Min 6 characters"></div>
-    <div class="form-group"><label>Confirm Password <span class="req">*</span></label>
-      <input type="password" id="su-pass2" placeholder="Re-enter password"></div>
-    <label class="check-row">
-      <input type="checkbox" id="su-age">
-      <span>I confirm I am 18+ and agree to Terms & Privacy</span>
-    </label>
-    <button class="btn btn-primary btn-lg" id="signupBtn" onclick="doSignup()">Create Account</button>
+
+    <div class="form-group"><label>Rate (₹/hour)</label>
+      <input type="number" id="e-rate" placeholder="e.g. 500" min="0"
+             oninput="previewUpdate()"></div>
+    <div class="form-group"><label>Bio</label>
+      <textarea id="e-bio" placeholder="Tell customers about yourself..."
+                oninput="previewUpdate()"></textarea></div>
+    <div class="form-group"><label>City</label>
+      <input type="text" id="e-city" placeholder="Your city"
+             oninput="previewUpdate()"></div>
+    <div class="form-group"><label>Available Hours</label>
+      <input type="text" id="e-hours" placeholder="e.g. 6 PM - 11 PM"
+             oninput="previewUpdate()"></div>
+    <div class="form-group"><label>Services</label>
+      <input type="text" id="e-services" placeholder="e.g. Dinner date, Movie"
+             oninput="previewUpdate()"></div>
+    <button class="btn btn-primary btn-lg" id="saveBtn" onclick="saveProfile()">
+      💾 Save Changes
+    </button>
   </div>
 
-  <div class="admin-link">
-    
+  <div id="setupMode" class="hidden">
+    <div class="steps-bar">
+      <div class="step active" id="kstep1"></div>
+      <div class="step" id="kstep2"></div>
+      <div class="step" id="kstep3"></div>
+    </div>
+
+    <div class="step-page active" id="ks1">
+      <h2 class="section-title">Step 1 · Personal</h2>
+      <div class="form-group"><label>Age <span class="req">*</span></label>
+        <input type="number" id="k-age" placeholder="Age (18+)" min="18" max="99"></div>
+      <div class="form-group"><label>Gender <span class="req">*</span></label>
+        <select id="k-gender"><option value="">Select</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option></select></div>
+      <div class="form-group"><label>City <span class="req">*</span></label>
+        <input type="text" id="k-city" placeholder="Your city"></div>
+      <div class="form-group"><label>Height (cm)</label>
+        <input type="number" id="k-height" placeholder="e.g. 175"></div>
+      <div class="form-group"><label>About You <span class="req">*</span></label>
+        <textarea id="k-bio" placeholder="Tell customers about yourself..."></textarea></div>
+      <div class="form-group"><label>Languages</label>
+        <input type="text" id="k-lang" placeholder="Hindi, English"></div>
+      <button class="btn btn-primary btn-lg" onclick="setupStep(1)">Next →</button>
+    </div>
+
+    <div class="step-page" id="ks2">
+      <h2 class="section-title">Step 2 · Rates & Photo</h2>
+      <div class="form-group"><label>Hourly Rate (₹) <span class="req">*</span></label>
+        <input type="number" id="k-rate" placeholder="Set your rate" min="0"></div>
+      <div class="form-group"><label>Available Hours</label>
+        <input type="text" id="k-hours" placeholder="e.g. 6 PM - 11 PM"></div>
+      <div class="form-group"><label>Services Offered</label>
+        <input type="text" id="k-services" placeholder="e.g. Dinner date, Movie"></div>
+      <div class="form-group"><label>Public Photo <span class="req">*</span></label>
+        <div class="upload-box" id="photo-box" onclick="document.getElementById('k-photo').click()">
+          <span class="icon">📷</span>
+          <p>Tap to upload profile photo</p>
+          <div class="file-name" id="photo-name"></div>
+        </div>
+        <input type="file" id="k-photo" accept="image/*" class="hidden" onchange="handlePhoto(this)">
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="setupStep(2)">Next →</button>
+      <button class="btn btn-ghost btn-lg" style="margin-top:8px" onclick="showStep(1)">← Back</button>
+    </div>
+
+    <div class="step-page" id="ks3">
+      <h2 class="section-title">Step 3 · KYC</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:16px">
+        Aadhaar/PAN verification required. Photos only visible to admin.
+      </p>
+      <div class="form-group"><label>ID Type <span class="req">*</span></label>
+        <select id="k-idtype">
+          <option value="aadhaar">Aadhaar</option>
+          <option value="pan">PAN</option>
+          <option value="dl">Driving License</option>
+        </select></div>
+      <div class="form-group"><label>ID Number <span class="req">*</span></label>
+        <input type="text" id="k-idnum" placeholder="Enter ID number" autocapitalize="characters"></div>
+      <div class="form-group"><label>ID Photo <span class="req">*</span></label>
+        <div class="upload-box" id="id-box" onclick="document.getElementById('k-idphoto').click()">
+          <span class="icon">🪪</span><p>Tap to upload ID photo</p>
+          <div class="file-name" id="id-name"></div>
+        </div>
+        <input type="file" id="k-idphoto" accept="image/*" class="hidden" onchange="handleIdPhoto(this)">
+      </div>
+      <div class="form-group"><label>Selfie with ID <span class="req">*</span></label>
+        <div class="upload-box" id="selfie-box" onclick="document.getElementById('k-selfie').click()">
+          <span class="icon">🤳</span><p>Tap to upload selfie</p>
+          <div class="file-name" id="selfie-name"></div>
+        </div>
+        <input type="file" id="k-selfie" accept="image/*" class="hidden" onchange="handleSelfie(this)">
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="setupStep(3)">Submit for Approval ✓</button>
+      <button class="btn btn-ghost btn-lg" style="margin-top:8px" onclick="showStep(2)">← Back</button>
+    </div>
   </div>
 </div>
 
+<div class="bottom-nav" id="nav"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, set, push }
+import { getDatabase, ref, get, update, onValue }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -173,8 +314,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let loginRole = 'customer';
-let signupRole = 'customer';
+let me = null;
+let meUnsub = null;
+let editingPhoto = '';
+const kycData = { photo: '', idPhoto: '', selfie: '' };
 
 function toast(msg, type) {
   const t = document.createElement('div');
@@ -184,123 +327,487 @@ function toast(msg, type) {
   setTimeout(() => t.remove(), 2800);
 }
 
-window.switchTab = function(tab) {
-  document.getElementById('tabLoginBtn').classList.toggle('active', tab === 'login');
-  document.getElementById('tabSignupBtn').classList.toggle('active', tab === 'signup');
-  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
-  document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
-};
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
 
-window.pickRole = function(el, ctx) {
-  el.parentElement.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  if (ctx === 'login') loginRole = el.dataset.role;
-  else signupRole = el.dataset.role;
-};
+function avatarHTML(u) {
+  if (u && u.photo) return `<img src="${u.photo}">`;
+  return '👨';
+}
 
-window.doLogin = async function() {
-  const u = document.getElementById('li-user').value.trim().toLowerCase();
-  const p = document.getElementById('li-pass').value;
-  if (!u || !p) return toast('Enter credentials', 'error');
+function starsStr(n) {
+  const full = Math.round(n);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
 
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = true; btn.textContent = 'Logging in...';
-  try {
-    const snap = await get(ref(db, 'users'));
-    if (!snap.exists()) throw new Error('No users found');
-    const found = Object.values(snap.val()).find(x =>
-      x.username === u && x.pass === p && x.role === loginRole
-    );
-    if (!found) throw new Error('Invalid credentials');
-    if (found.status === 'blocked') throw new Error('Account blocked. Contact support.');
+function readImage(file, maxKB = 600) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 800;
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const s = maxDim / Math.max(width, height);
+          width = Math.round(width * s);
+          height = Math.round(height * s);
+        }
+        const c = document.createElement('canvas');
+        c.width = width; c.height = height;
+        c.getContext('2d').drawImage(img, 0, 0, width, height);
+        let q = 0.75;
+        let d = c.toDataURL('image/jpeg', q);
+        while (d.length / 1024 > maxKB && q > 0.3) {
+          q -= 0.1;
+          d = c.toDataURL('image/jpeg', q);
+        }
+        resolve(d);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-    localStorage.setItem('currentUser', JSON.stringify({ uid: found.uid, role: found.role }));
-    toast('Welcome ' + found.name, 'success');
-
-    setTimeout(() => {
-      if (found.role === 'playboy') {
-        window.location.href = found.kycDone && found.status === 'active'
-          ? 'profile.html' : 'profile.html';
-      } else {
-        window.location.href = 'home.html';
-      }
-    }, 500);
-  } catch (e) {
-    toast(e.message, 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Login';
+window.logout = function() {
+  if (!confirm('Logout?')) return;
+  if (me) {
+    update(ref(db, 'presence/' + me.uid), { online: false, lastSeen: Date.now() }).catch(() => {});
   }
+  localStorage.removeItem('currentUser');
+  window.location.href = 'index.html';
 };
 
-window.doSignup = async function() {
-  const name = document.getElementById('su-name').value.trim();
-  const username = document.getElementById('su-user').value.trim().toLowerCase();
-  const phone = document.getElementById('su-phone').value.trim();
-  const email = document.getElementById('su-email').value.trim();
-  const pass = document.getElementById('su-pass').value;
-  const pass2 = document.getElementById('su-pass2').value;
-  const age18 = document.getElementById('su-age').checked;
+/* ============================================================
+   REFERRAL — generate unique code
+   ============================================================ */
+async function ensureReferralCode() {
+  if (!me) return;
+  if (me.referralCode) {
+    const el = document.getElementById('refCodeDisplay');
+    if (el) el.textContent = me.referralCode;
+    return;
+  }
 
-  if (!name || !username || !phone || !pass) return toast('Fill required fields', 'error');
-  if (pass.length < 6) return toast('Password min 6 chars', 'error');
-  if (pass !== pass2) return toast('Passwords do not match', 'error');
-  if (!/^[0-9]{10}$/.test(phone)) return toast('Valid 10-digit phone required', 'error');
-  if (!/^[a-z0-9_]{3,}$/.test(username)) return toast('Username: 3+ chars (a-z 0-9 _)', 'error');
-  if (!age18) return toast('You must be 18+', 'error');
+  // Generate: 3 letters of username + 4 digits
+  const base = me.username.substring(0, 3).toUpperCase();
+  let code = base + Math.floor(1000 + Math.random() * 9000);
 
-  const btn = document.getElementById('signupBtn');
-  btn.disabled = true; btn.textContent = 'Creating...';
+  // Ensure unique
   try {
     const snap = await get(ref(db, 'users'));
     if (snap.exists()) {
-      const taken = Object.values(snap.val()).some(u => u.username === username);
-      if (taken) throw new Error('Username already taken');
+      const used = new Set(Object.values(snap.val()).map(u => u.referralCode).filter(Boolean));
+      let tries = 0;
+      while (used.has(code) && tries < 10) {
+        code = base + Math.floor(1000 + Math.random() * 9000);
+        tries++;
+      }
     }
-    const newRef = push(ref(db, 'users'));
-    const uid = newRef.key;
-    const user = {
-      uid, role: signupRole, name, username, phone, email, pass,
-      bio: '', rate: 0, city: '', hours: '', services: '', photo: '',
-      age: 0, gender: '', height: '', lang: '',
-      kycDone: false, kyc: null, verified: false,
-      status: signupRole === 'playboy' ? 'kyc_pending' : 'active',
-      createdAt: Date.now()
-    };
-    await set(newRef, user);
-    localStorage.setItem('currentUser', JSON.stringify({ uid, role: signupRole }));
-    toast('Account created!', 'success');
-    setTimeout(() => {
-      window.location.href = signupRole === 'playboy' ? 'profile.html' : 'home.html';
-    }, 500);
+    await update(ref(db, 'users/' + me.uid), { referralCode: code });
+    me.referralCode = code;
+    const el = document.getElementById('refCodeDisplay');
+    if (el) el.textContent = code;
   } catch (e) {
-    toast(e.message, 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Create Account';
+    console.error('Referral code gen failed', e);
+  }
+}
+
+window.copyReferralCode = function() {
+  if (!me?.referralCode) return toast('Code not ready', 'error');
+  navigator.clipboard.writeText(me.referralCode).then(() => {
+    toast('✅ Code copied: ' + me.referralCode, 'success');
+  }).catch(() => toast('Copy failed', 'error'));
+};
+
+/* ============================================================
+   SHARE
+   ============================================================ */
+window.shareOnWhatsApp = function() {
+  if (!me) return;
+  const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+  const profileUrl = baseUrl + '/home.html?ref=' + (me.referralCode || '');
+  const text = `Hey! 💋 Check out my profile on PlayBoy Rentals\n\n` +
+               `👨 ${me.name}\n` +
+               `💰 ₹${me.rate}/hour\n` +
+               `📍 ${me.city || 'N/A'}\n\n` +
+               `Book me here: ${profileUrl}\n\n` +
+               `🎁 Use my referral code *${me.referralCode || ''}* for ₹100 off when you join!`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+};
+
+window.shareProfileLink = function() {
+  if (!me) return;
+  const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+  const profileUrl = baseUrl + '/home.html?ref=' + (me.referralCode || '');
+  navigator.clipboard.writeText(profileUrl).then(() => {
+    toast('✅ Profile link copied!', 'success');
+  }).catch(() => toast('Copy failed', 'error'));
+};
+
+/* ============================================================
+   RENDER PROFILE
+   ============================================================ */
+function renderProfile() {
+  const box = document.getElementById('profileBox');
+  const editMode = document.getElementById('editMode');
+  const setupMode = document.getElementById('setupMode');
+  if (!me) return;
+
+  let badge = '';
+  if (me.status === 'active' && me.verified) badge = '<div class="badge verified">✓ KYC Verified</div>';
+  else if (me.status === 'kyc_pending') badge = '<div class="badge pending">⏳ Waiting Approval</div>';
+  else if (me.status === 'rejected') badge = '<div class="badge rejected">❌ KYC Rejected</div>';
+  else if (me.status === 'blocked') badge = '<div class="badge blocked">🚫 Blocked</div>';
+
+  let ratingLine = '';
+  if (me.avgRating > 0) {
+    ratingLine = `<div class="rating-line">
+      <span class="stars">${starsStr(me.avgRating)}</span>
+      <span class="rating-num">${me.avgRating}</span>
+      <span class="rating-count">(${me.totalReviews || 0} reviews)</span>
+    </div>`;
+  } else {
+    ratingLine = `<div style="color:var(--muted);font-size:12px;margin-top:8px">
+      No reviews yet — complete bookings to get rated
+    </div>`;
+  }
+
+  // Referral section (only if active+verified)
+  let referralSection = '';
+  if (me.status === 'active' && me.verified) {
+    referralSection = `
+      <div class="referral-card">
+        <div class="ref-label">🎁 Your Referral Code</div>
+        <div class="ref-row">
+          <div class="ref-code" id="refCodeDisplay">${me.referralCode || '...'}</div>
+          <button class="ref-copy" onclick="copyReferralCode()">Copy</button>
+        </div>
+        <div class="ref-hint">
+          Share with new playboys — both get <strong style="color:var(--gold)">₹100 bonus</strong>!
+        </div>
+      </div>
+      <div class="share-buttons">
+        <button class="share-btn wa" onclick="shareOnWhatsApp()">
+          <span style="font-size:16px">💬</span> Share on WhatsApp
+        </button>
+        <button class="share-btn copy" onclick="shareProfileLink()">
+          <span style="font-size:16px">🔗</span> Copy Link
+        </button>
+      </div>
+    `;
+  }
+
+  // Wallet balance display
+  const walletLine = me.walletBalance > 0 ? `
+    <div style="background:rgba(0,184,148,.1);padding:8px 14px;border-radius:20px;
+                margin-top:8px;font-size:12px;color:var(--success);font-weight:600">
+      💰 Wallet: ₹${me.walletBalance}
+    </div>
+  ` : '';
+
+  box.innerHTML = `
+    <div class="profile-head">
+      <div class="profile-avatar">
+        ${avatarHTML(me)}
+        ${me.verified ? '<div class="tick">✓</div>' : ''}
+      </div>
+      <h2>${escapeHtml(me.name)}</h2>
+      <div class="username">@${escapeHtml(me.username)}</div>
+      ${me.rate ? `<div class="rate-tag">₹${me.rate}/hour</div>` : ''}
+      ${ratingLine}
+      ${walletLine}
+      ${referralSection}
+      <div style="color:var(--muted);font-size:12px;margin-top:10px">
+        📍 ${escapeHtml(me.city || 'N/A')} · 📞 ${escapeHtml(me.phone || 'N/A')}
+      </div>
+      ${me.bio ? `<div style="color:var(--muted);font-size:12px;margin-top:8px;
+        max-width:100%;text-align:center;line-height:1.4">${escapeHtml(me.bio)}</div>` : ''}
+      ${badge}
+    </div>
+  `;
+
+  // Show appropriate mode
+  if (me.kycDone && me.status === 'active') {
+    editMode.classList.remove('hidden');
+    setupMode.classList.add('hidden');
+
+    const setIfNotFocused = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && document.activeElement !== el) el.value = val ?? '';
+    };
+    setIfNotFocused('e-rate', me.rate);
+    setIfNotFocused('e-bio', me.bio || '');
+    setIfNotFocused('e-city', me.city || '');
+    setIfNotFocused('e-hours', me.hours || '');
+    setIfNotFocused('e-services', me.services || '');
+
+    const preview = document.getElementById('editPhotoPreview');
+    if (preview) {
+      preview.innerHTML = editingPhoto
+        ? `<img src="${editingPhoto}">`
+        : (me.photo ? `<img src="${me.photo}">` : '👨');
+    }
+
+    // Ensure referral code exists
+    ensureReferralCode();
+  } else if (me.status === 'kyc_pending') {
+    editMode.classList.add('hidden');
+    setupMode.classList.add('hidden');
+  } else if (me.status === 'rejected') {
+    editMode.classList.add('hidden');
+    setupMode.classList.remove('hidden');
+    if (me.rejectionReason) {
+      box.innerHTML += `<div style="background:rgba(231,76,60,.1);
+        border-left:3px solid var(--danger);padding:12px;border-radius:8px;
+        margin-top:12px;font-size:13px">
+        <strong style="color:var(--danger)">Rejection reason:</strong><br>
+        ${escapeHtml(me.rejectionReason)}
+      </div>`;
+    }
+  } else {
+    editMode.classList.add('hidden');
+    setupMode.classList.remove('hidden');
+    if (me.age && !document.getElementById('k-age').value)
+      document.getElementById('k-age').value = me.age;
+    if (me.gender && !document.getElementById('k-gender').value)
+      document.getElementById('k-gender').value = me.gender;
+    if (me.city && !document.getElementById('k-city').value)
+      document.getElementById('k-city').value = me.city;
+    if (me.bio && !document.getElementById('k-bio').value)
+      document.getElementById('k-bio').value = me.bio;
+    if (me.lang && !document.getElementById('k-lang').value)
+      document.getElementById('k-lang').value = me.lang;
+  }
+}
+
+window.previewUpdate = function() {
+  if (!me) return;
+  const tempMe = {
+    ...me,
+    rate: +document.getElementById('e-rate').value || 0,
+    bio: document.getElementById('e-bio').value.trim(),
+    city: document.getElementById('e-city').value.trim(),
+    hours: document.getElementById('e-hours').value.trim(),
+    services: document.getElementById('e-services').value.trim(),
+  };
+  const oldMe = me;
+  me = tempMe;
+  renderProfile();
+  me = oldMe;
+};
+
+window.handleEditPhoto = async function(inp) {
+  const f = inp.files[0];
+  if (!f) return;
+  try {
+    editingPhoto = await readImage(f, 500);
+    const preview = document.getElementById('editPhotoPreview');
+    preview.innerHTML = `<img src="${editingPhoto}">`;
+    toast('Photo ready — tap Save to update', 'success');
+  } catch (e) {
+    toast('Photo read failed', 'error');
   }
 };
 
-// Init — auto-redirect if logged in
+window.saveProfile = async function() {
+  const btn = document.getElementById('saveBtn');
+  const rate = +document.getElementById('e-rate').value;
+  const bio = document.getElementById('e-bio').value.trim();
+  const city = document.getElementById('e-city').value.trim();
+  const hours = document.getElementById('e-hours').value.trim();
+  const services = document.getElementById('e-services').value.trim();
+
+  if (!rate || rate <= 0) return toast('Enter valid rate', 'error');
+  if (!bio) return toast('Write your bio', 'error');
+  if (!city) return toast('Enter your city', 'error');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+
+  try {
+    const patch = { rate, bio, city, hours, services };
+    if (editingPhoto) patch.photo = editingPhoto;
+
+    await update(ref(db, 'users/' + me.uid), patch);
+    Object.assign(me, patch);
+    editingPhoto = '';
+
+    toast('✅ Profile updated!', 'success');
+    renderProfile();
+  } catch (e) {
+    toast('Save failed: ' + (e.message || 'Check rules'), 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Save Changes';
+  }
+};
+
+window.showStep = function(n) {
+  document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('ks' + n).classList.add('active');
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('kstep' + i);
+    el.className = 'step';
+    if (i < n) el.classList.add('done');
+    if (i === n) el.classList.add('active');
+  }
+  window.scrollTo(0, 0);
+};
+
+window.handlePhoto = async function(inp) {
+  const f = inp.files[0]; if (!f) return;
+  kycData.photo = await readImage(f, 500);
+  document.getElementById('photo-name').textContent = '✓ ' + f.name;
+  document.getElementById('photo-box').classList.add('has-file');
+};
+window.handleIdPhoto = async function(inp) {
+  const f = inp.files[0]; if (!f) return;
+  kycData.idPhoto = await readImage(f, 400);
+  document.getElementById('id-name').textContent = '✓ ' + f.name;
+  document.getElementById('id-box').classList.add('has-file');
+};
+window.handleSelfie = async function(inp) {
+  const f = inp.files[0]; if (!f) return;
+  kycData.selfie = await readImage(f, 400);
+  document.getElementById('selfie-name').textContent = '✓ ' + f.name;
+  document.getElementById('selfie-box').classList.add('has-file');
+};
+
+window.setupStep = async function(n) {
+  if (n === 1) {
+    const age = +document.getElementById('k-age').value;
+    const gender = document.getElementById('k-gender').value;
+    const city = document.getElementById('k-city').value.trim();
+    const height = document.getElementById('k-height').value;
+    const bio = document.getElementById('k-bio').value.trim();
+    const lang = document.getElementById('k-lang').value.trim();
+    if (!age || age < 18) return toast('Age 18+ required', 'error');
+    if (!gender) return toast('Select gender', 'error');
+    if (!city) return toast('Enter city', 'error');
+    if (!bio) return toast('Write bio', 'error');
+    try {
+      await update(ref(db, 'users/' + me.uid), { age, gender, city, height, bio, lang });
+      Object.assign(me, { age, gender, city, height, bio, lang });
+      renderProfile();
+      showStep(2);
+    } catch (e) {
+      toast('Save failed: ' + e.message, 'error');
+    }
+    return;
+  }
+  if (n === 2) {
+    const rate = +document.getElementById('k-rate').value;
+    const hours = document.getElementById('k-hours').value.trim();
+    const services = document.getElementById('k-services').value.trim();
+    if (!rate || rate <= 0) return toast('Set rate', 'error');
+    if (!kycData.photo) return toast('Upload photo', 'error');
+    try {
+      await update(ref(db, 'users/' + me.uid), { rate, hours, services, photo: kycData.photo });
+      Object.assign(me, { rate, hours, services, photo: kycData.photo });
+      renderProfile();
+      showStep(3);
+    } catch (e) {
+      toast('Save failed: ' + e.message, 'error');
+    }
+    return;
+  }
+  if (n === 3) {
+    const idType = document.getElementById('k-idtype').value;
+    const idNum = document.getElementById('k-idnum').value.trim();
+    if (!idNum) return toast('Enter ID number', 'error');
+    if (!kycData.idPhoto) return toast('Upload ID photo', 'error');
+    if (!kycData.selfie) return toast('Upload selfie', 'error');
+    try {
+      await update(ref(db, 'users/' + me.uid), {
+        kycDone: true,
+        status: 'kyc_pending',
+        rejectionReason: null,
+        kyc: {
+          idType, idNum,
+          idPhoto: kycData.idPhoto,
+          selfie: kycData.selfie,
+          submittedAt: Date.now()
+        }
+      });
+      toast('✅ KYC submitted! Waiting for admin approval', 'success');
+    } catch (e) {
+      toast('Submit failed: ' + e.message, 'error');
+    }
+  }
+};
+
+function setupNav() {
+  document.getElementById('nav').innerHTML = `
+    <a class="active" onclick="location.href='profile.html'">
+      <span class="icon">👨</span><span>Profile</span></a>
+    <a onclick="location.href='chat.html'">
+      <span class="icon">💬</span><span>Chat</span></a>
+    <a onclick="location.href='bookings.html'">
+      <span class="icon">📋</span><span>Bookings</span></a>
+    <a onclick="location.href='support.html'">
+      <span class="icon">🛟</span><span>Support</span></a>
+  `;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
 (async function init() {
   await new Promise(r => setTimeout(r, 300));
   document.getElementById('loader').style.display = 'none';
-  document.getElementById('mainWrap').style.display = 'flex';
 
   const saved = localStorage.getItem('currentUser');
-  if (saved) {
-    try {
-      const { uid, role } = JSON.parse(saved);
-      const snap = await get(ref(db, 'users/' + uid));
-      if (snap.exists()) {
-        const user = snap.val();
-        if (user.status === 'blocked') {
-          localStorage.removeItem('currentUser');
-          return;
-        }
-        window.location.href = role === 'playboy' ? 'profile.html' : 'home.html';
-      } else {
-        localStorage.removeItem('currentUser');
+  if (!saved) { window.location.href = 'index.html'; return; }
+
+  let uid;
+  try {
+    uid = JSON.parse(saved).uid;
+  } catch {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  try {
+    const snap = await get(ref(db, 'users/' + uid));
+    if (!snap.exists()) {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+      return;
+    }
+    me = snap.val();
+    if (me.role !== 'playboy') { window.location.href = 'home.html'; return; }
+    if (me.status === 'blocked') {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    setupNav();
+    renderProfile();
+
+    if (meUnsub) meUnsub();
+    meUnsub = onValue(ref(db, 'users/' + uid), snap => {
+      if (!snap.exists()) return;
+      const prevStatus = me?.status;
+      me = snap.val();
+
+      if (prevStatus !== me.status) {
+        if (me.status === 'active' && me.verified) toast('🎉 Admin approved your profile!', 'success');
+        else if (me.status === 'rejected') toast('❌ Admin rejected KYC', 'error');
+        else if (me.status === 'blocked') toast('🚫 Account blocked', 'error');
       }
-    } catch {}
+
+      renderProfile();
+    });
+
+  } catch (e) {
+    window.location.href = 'index.html';
   }
 })();
 </script>
