@@ -57,6 +57,20 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .rating-line .rating-num{color:var(--gold);font-weight:700;font-size:15px}
 .rating-line .rating-count{color:var(--muted);font-size:12px}
 
+.wallet-line{background:rgba(0,184,148,.1);padding:8px 14px;border-radius:20px;
+  margin-top:8px;font-size:12px;color:var(--success);font-weight:600}
+
+.referral-cta{background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,46,99,.15));
+  border:2px solid var(--gold);border-radius:14px;padding:16px;
+  margin-top:14px;width:100%;text-align:center}
+.referral-cta .ref-icon{font-size:32px;margin-bottom:8px}
+.referral-cta .ref-title{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.referral-cta .ref-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.referral-cta .ref-btn{background:var(--gold);color:#000;border:none;padding:12px 24px;
+  border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;
+  font-size:14px;width:100%;transition:.2s}
+.referral-cta .ref-btn:active{transform:scale(.97)}
+
 .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;
   margin-top:10px;text-transform:uppercase;letter-spacing:.5px}
 .badge.verified{background:var(--success);color:#fff}
@@ -150,6 +164,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 <div class="container">
   <div id="profileBox"></div>
 
+  <!-- EDIT MODE -->
   <div id="editMode" class="hidden">
     <h2 class="section-title">Edit <span>Details</span></h2>
 
@@ -186,6 +201,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     </button>
   </div>
 
+  <!-- KYC SETUP MODE -->
   <div id="setupMode" class="hidden">
     <div class="steps-bar">
       <div class="step active" id="kstep1"></div>
@@ -292,6 +308,9 @@ let meUnsub = null;
 let editingPhoto = '';
 const kycData = { photo: '', idPhoto: '', selfie: '' };
 
+/* ============================================================
+   HELPERS
+   ============================================================ */
 function toast(msg, type) {
   const t = document.createElement('div');
   t.className = 'toast ' + (type || '');
@@ -347,13 +366,23 @@ function readImage(file, maxKB = 600) {
   });
 }
 
+/* ============================================================
+   LOGOUT — FIXED
+   ============================================================ */
 window.logout = function() {
   if (!confirm('Logout?')) return;
+  // Mark offline
   if (me) {
     update(ref(db, 'presence/' + me.uid), { online: false, lastSeen: Date.now() }).catch(() => {});
   }
+  // Clear everything
   localStorage.removeItem('currentUser');
-  window.location.href = 'index.html';
+  localStorage.clear();
+  sessionStorage.clear();
+  // Stop listeners
+  if (meUnsub) { meUnsub(); meUnsub = null; }
+  // Hard redirect with cache bypass
+  window.location.replace('index.html?logout=1');
 };
 
 /* ============================================================
@@ -371,7 +400,6 @@ function renderProfile() {
   else if (me.status === 'rejected') badge = '<div class="badge rejected">❌ KYC Rejected</div>';
   else if (me.status === 'blocked') badge = '<div class="badge blocked">🚫 Blocked</div>';
 
-  // Rating line
   let ratingLine = '';
   if (me.avgRating > 0) {
     ratingLine = `<div class="rating-line">
@@ -385,6 +413,26 @@ function renderProfile() {
     </div>`;
   }
 
+  // Wallet balance
+  const walletLine = me.walletBalance > 0
+    ? `<div class="wallet-line">💰 Wallet: ₹${me.walletBalance}</div>`
+    : '';
+
+  // Referral CTA (only for active+verified)
+  let referralSection = '';
+  if (me.status === 'active' && me.verified) {
+    referralSection = `
+      <div class="referral-cta">
+        <div class="ref-icon">🎁</div>
+        <div class="ref-title">Earn ₹100 Per Referral</div>
+        <div class="ref-sub">Share your code with new playboys</div>
+        <button class="ref-btn" onclick="location.href='referral.html'">
+          🎁 View Referral Page
+        </button>
+      </div>
+    `;
+  }
+
   box.innerHTML = `
     <div class="profile-head">
       <div class="profile-avatar">
@@ -395,7 +443,9 @@ function renderProfile() {
       <div class="username">@${escapeHtml(me.username)}</div>
       ${me.rate ? `<div class="rate-tag">₹${me.rate}/hour</div>` : ''}
       ${ratingLine}
-      <div style="color:var(--muted);font-size:12px;margin-top:6px">
+      ${walletLine}
+      ${referralSection}
+      <div style="color:var(--muted);font-size:12px;margin-top:10px">
         📍 ${escapeHtml(me.city || 'N/A')} · 📞 ${escapeHtml(me.phone || 'N/A')}
       </div>
       ${me.bio ? `<div style="color:var(--muted);font-size:12px;margin-top:8px;
@@ -404,6 +454,7 @@ function renderProfile() {
     </div>
   `;
 
+  // Show correct mode
   if (me.kycDone && me.status === 'active') {
     editMode.classList.remove('hidden');
     setupMode.classList.add('hidden');
@@ -454,6 +505,9 @@ function renderProfile() {
   }
 }
 
+/* ============================================================
+   LIVE PREVIEW
+   ============================================================ */
 window.previewUpdate = function() {
   if (!me) return;
   const tempMe = {
@@ -470,6 +524,9 @@ window.previewUpdate = function() {
   me = oldMe;
 };
 
+/* ============================================================
+   PHOTO EDIT
+   ============================================================ */
 window.handleEditPhoto = async function(inp) {
   const f = inp.files[0];
   if (!f) return;
@@ -483,6 +540,9 @@ window.handleEditPhoto = async function(inp) {
   }
 };
 
+/* ============================================================
+   SAVE PROFILE
+   ============================================================ */
 window.saveProfile = async function() {
   const btn = document.getElementById('saveBtn');
   const rate = +document.getElementById('e-rate').value;
@@ -516,6 +576,9 @@ window.saveProfile = async function() {
   }
 };
 
+/* ============================================================
+   KYC SETUP STEPS
+   ============================================================ */
 window.showStep = function(n) {
   document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
   document.getElementById('ks' + n).classList.add('active');
@@ -610,16 +673,19 @@ window.setupStep = async function(n) {
   }
 };
 
+/* ============================================================
+   NAV
+   ============================================================ */
 function setupNav() {
   document.getElementById('nav').innerHTML = `
     <a class="active" onclick="location.href='profile.html'">
       <span class="icon">👨</span><span>Profile</span></a>
+    <a onclick="location.href='referral.html'">
+      <span class="icon">🎁</span><span>Referral</span></a>
     <a onclick="location.href='chat.html'">
       <span class="icon">💬</span><span>Chat</span></a>
     <a onclick="location.href='bookings.html'">
       <span class="icon">📋</span><span>Bookings</span></a>
-    <a onclick="location.href='support.html'">
-      <span class="icon">🛟</span><span>Support</span></a>
   `;
 }
 
@@ -631,13 +697,17 @@ function setupNav() {
   document.getElementById('loader').style.display = 'none';
 
   const saved = localStorage.getItem('currentUser');
-  if (!saved) { window.location.href = 'index.html'; return; }
+  if (!saved) {
+    window.location.replace('index.html');
+    return;
+  }
 
   let uid;
   try {
     uid = JSON.parse(saved).uid;
   } catch {
-    window.location.href = 'index.html';
+    localStorage.removeItem('currentUser');
+    window.location.replace('index.html');
     return;
   }
 
@@ -645,20 +715,21 @@ function setupNav() {
     const snap = await get(ref(db, 'users/' + uid));
     if (!snap.exists()) {
       localStorage.removeItem('currentUser');
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
       return;
     }
     me = snap.val();
-    if (me.role !== 'playboy') { window.location.href = 'home.html'; return; }
+    if (me.role !== 'playboy') { window.location.replace('home.html'); return; }
     if (me.status === 'blocked') {
       localStorage.removeItem('currentUser');
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
       return;
     }
 
     setupNav();
     renderProfile();
 
+    // Realtime listener
     if (meUnsub) meUnsub();
     meUnsub = onValue(ref(db, 'users/' + uid), snap => {
       if (!snap.exists()) return;
@@ -675,7 +746,7 @@ function setupNav() {
     });
 
   } catch (e) {
-    window.location.href = 'index.html';
+    window.location.replace('index.html');
   }
 })();
 </script>
