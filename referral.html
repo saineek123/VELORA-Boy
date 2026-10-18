@@ -206,9 +206,9 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 /* ============================================================
-   🔥 APK DOWNLOAD LINK — CHANGE THIS IF YOU UPDATE APK
+   🔥 APK DOWNLOAD LINK — UPDATED TO VERSION 7
    ============================================================ */
-const APK_URL = 'https://github.com/saineek123/VELORA-Boy/releases/download/v.0/app-release.6.apk';
+const APK_URL = 'https://github.com/saineek123/VELORA-Boy/releases/download/v.0/app-release.7.apk';
 const APP_NAME = 'VELORA Boy';
 const REFERRAL_BONUS = 100;
 
@@ -308,26 +308,38 @@ window.copyCode = function() {
 };
 
 /* ============================================================
-   SHARE FUNCTIONS — WITH APK LINK
+   SHARE FUNCTIONS — ATTRACTIVE TEXT + APK LINK
    ============================================================ */
 window.shareWhatsApp = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
   const text =
-    `🎁 *${APP_NAME}* — Premium Companionship App!\n\n` +
-    `💰 Get ₹${REFERRAL_BONUS} bonus on signup!\n\n` +
-    `📱 Download App:\n${APK_URL}\n\n` +
-    `🎟️ Use my referral code:\n*${me.referralCode}*\n\n` +
-    `You'll get ₹${REFERRAL_BONUS} in your wallet, and I'll get ₹${REFERRAL_BONUS} too! 🚀`;
+    `🔥 *Welcome to ${APP_NAME}* 🔥\n` +
+    `India's Premium Companionship Platform! 💋\n\n` +
+    `✨ *Why join?*\n` +
+    `✅ Verified & Genuine Profiles\n` +
+    `✅ 100% Private & Secure\n` +
+    `✅ Instant Chat & Meetups\n\n` +
+    `📱 *Download the App Now:*\n${APK_URL}\n\n` +
+    `🎁 *Exclusive Offer!*\n` +
+    `Use my referral code: *${me.referralCode}*\n` +
+    `Get ₹${REFERRAL_BONUS} Bonus instantly in your wallet! 💰\n\n` +
+    `Download now and find your perfect match! 👇`;
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 };
 
 window.shareTelegram = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
   const text =
-    `🎁 *${APP_NAME}* — Premium App!\n\n` +
-    `📱 Download: ${APK_URL}\n\n` +
-    `🎟️ Use my code: *${me.referralCode}*\n\n` +
-    `Get ₹${REFERRAL_BONUS} bonus instantly! 💰`;
+    `🔥 *Welcome to ${APP_NAME}* 🔥\n` +
+    `India's Premium Companionship Platform! 💋\n\n` +
+    `✨ *Why join?*\n` +
+    `✅ Verified & Genuine Profiles\n` +
+    `✅ 100% Private & Secure\n` +
+    `✅ Instant Chat & Meetups\n\n` +
+    `📱 *Download the App Now:*\n${APK_URL}\n\n` +
+    `🎁 *Exclusive Offer!*\n` +
+    `Use my referral code: *${me.referralCode}*\n` +
+    `Get ₹${REFERRAL_BONUS} Bonus instantly in your wallet! 💰`;
   window.open(
     'https://t.me/share/url?url=' + encodeURIComponent(APK_URL) +
     '&text=' + encodeURIComponent(text),
@@ -338,20 +350,21 @@ window.shareTelegram = function() {
 window.shareLink = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
   const text =
-    `🎁 Join ${APP_NAME} & get ₹${REFERRAL_BONUS} bonus!\n\n` +
+    `🔥 *${APP_NAME} — Premium App* 🔥\n\n` +
     `📱 Download App:\n${APK_URL}\n\n` +
-    `🎟️ Referral Code: ${me.referralCode}\n\n` +
-    `Use code during signup to claim bonus 💰`;
+    `🎟️ Referral Code: *${me.referralCode}*\n\n` +
+    `Use code during signup to claim ₹${REFERRAL_BONUS} bonus 💰\n` +
+    `Find your perfect match today! 💋`;
   navigator.clipboard.writeText(text).then(() => {
-    toast('🔗 APK link + code copied!', 'success');
+    toast('🔗 App link + code copied!', 'success');
   }).catch(() => toast('Copy failed', 'error'));
 };
 
 window.shareSMS = function() {
   if (!me?.referralCode) return toast('Code not ready', 'error');
   const text =
-    `Join ${APP_NAME}! Download: ${APK_URL} ` +
-    `Use code ${me.referralCode} for ₹${REFERRAL_BONUS} bonus`;
+    `🔥 Join ${APP_NAME} - India's Premium App! Download now: ${APK_URL} ` +
+    `Use my code ${me.referralCode} to get ₹${REFERRAL_BONUS} bonus instantly! 💰`;
   window.location.href = 'sms:?body=' + encodeURIComponent(text);
 };
 
