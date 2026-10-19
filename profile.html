@@ -139,6 +139,19 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
   border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .photo-edit-btn:active{transform:scale(.95)}
 
+/* PAYMENT STEP */
+.payment-box{background:var(--bg2);padding:20px;border-radius:12px;
+  text-align:center;border:1px solid var(--border);margin-bottom:16px}
+.qr-img{border-radius:10px;width:200px;height:200px;margin:0 auto 15px;
+  background:#fff;padding:5px;display:block}
+.upi-id{font-size:16px;font-weight:700;color:var(--gold);margin-bottom:5px}
+.pay-amount{font-size:22px;font-weight:800;color:var(--primary);margin-bottom:15px}
+.pay-actions{display:flex;gap:10px}
+.pay-actions a,.pay-actions button{flex:1;background:var(--bg3);color:#fff;
+  text-decoration:none;padding:12px;border-radius:10px;font-weight:600;
+  font-size:14px;border:1px solid var(--border);font-family:inherit;cursor:pointer}
+.pay-actions button:active,.pay-actions a:active{transform:scale(.97)}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);
   border-top:1px solid var(--border);display:flex;
   padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:40}
@@ -211,12 +224,13 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     </button>
   </div>
 
-  <!-- KYC SETUP MODE -->
+  <!-- KYC SETUP MODE (4 Steps) -->
   <div id="setupMode" class="hidden">
     <div class="steps-bar">
       <div class="step active" id="kstep1"></div>
       <div class="step" id="kstep2"></div>
       <div class="step" id="kstep3"></div>
+      <div class="step" id="kstep4"></div>
     </div>
 
     <div class="step-page active" id="ks1">
@@ -260,7 +274,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     </div>
 
     <div class="step-page" id="ks3">
-      <h2 class="section-title">Step 3 · KYC</h2>
+      <h2 class="section-title">Step 3 · KYC Verification</h2>
       <p style="color:var(--muted);font-size:13px;margin-bottom:16px">
         Aadhaar/PAN verification required. Photos only visible to admin.
       </p>
@@ -286,8 +300,42 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
         </div>
         <input type="file" id="k-selfie" accept="image/*" class="hidden" onchange="handleSelfie(this)">
       </div>
-      <button class="btn btn-primary btn-lg" onclick="setupStep(3)">Submit for Approval ✓</button>
+      <button class="btn btn-primary btn-lg" onclick="setupStep(3)">Next →</button>
       <button class="btn btn-ghost btn-lg" style="margin-top:8px" onclick="showStep(2)">← Back</button>
+    </div>
+
+    <div class="step-page" id="ks4">
+      <h2 class="section-title">Step 4 · Payment</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:16px">
+        Pay ₹199 registration fee to submit your profile for admin approval.
+      </p>
+
+      <div class="payment-box">
+        <div style="font-size:14px;margin-bottom:10px">Scan QR to Pay</div>
+        <img class="qr-img" 
+             src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3Ddailylgrow%40axl%26pn%3DVELORA%2520Boy%26am%3D199%26cu%3DINR" 
+             alt="QR Code">
+        <div class="upi-id">UPI ID: dailylgrow@axl</div>
+        <div class="pay-amount">Amount: ₹199</div>
+        
+        <div class="pay-actions">
+          <a href="upi://pay?pa=dailylgrow@axl&pn=VELORA%20Boy&am=199&cu=INR">
+             📱 Pay via UPI App
+          </a>
+          <button onclick="copyUpi()">
+             📋 Copy UPI ID
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>UTR / Transaction ID <span class="req">*</span></label>
+        <input type="text" id="k-utr" placeholder="12-digit UTR number" autocapitalize="characters">
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Enter the UTR after successful payment</div>
+      </div>
+      
+      <button class="btn btn-primary btn-lg" id="payBtn" onclick="submitPayment(this)">Submit for Approval ✓</button>
+      <button class="btn btn-ghost btn-lg" style="margin-top:8px" onclick="showStep(3)">← Back</button>
     </div>
   </div>
 </div>
@@ -314,7 +362,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 /* ============================================================
-   🔥 CONSTANTS — CHANGE APK URL WHEN YOU UPDATE
+   🔥 CONSTANTS
    ============================================================ */
 const APK_URL = 'https://github.com/saineek123/VELORA-Boy/releases/download/v.0/app-release.7.apk';
 const APP_NAME = 'VELORA Boy';
@@ -384,7 +432,7 @@ function readImage(file, maxKB = 600) {
 }
 
 /* ============================================================
-   LOGOUT — FIXED
+   LOGOUT
    ============================================================ */
 window.logout = function() {
   if (!confirm('Logout?')) return;
@@ -399,7 +447,7 @@ window.logout = function() {
 };
 
 /* ============================================================
-   SHARE FUNCTIONS — WITH APK LINK
+   SHARE FUNCTIONS
    ============================================================ */
 window.shareOnWhatsApp = function() {
   if (!me) return;
@@ -427,7 +475,7 @@ window.shareProfileLink = function() {
 };
 
 /* ============================================================
-   RENDER PROFILE (FIXED FLOW)
+   RENDER PROFILE (4-STEP FLOW)
    ============================================================ */
 function renderProfile() {
   const box = document.getElementById('profileBox');
@@ -531,13 +579,14 @@ function renderProfile() {
         : (me.photo ? `<img src="${me.photo}">` : '👨');
     }
   } else if (me.kycDone && me.status === 'kyc_pending') {
-    // Completed KYC, waiting for Admin -> Show nothing (just profile box)
+    // Completed KYC & Payment, waiting for Admin
     editMode.classList.add('hidden');
     setupMode.classList.add('hidden');
   } else if (me.status === 'rejected') {
     // Rejected -> Show setup mode again to retry
     editMode.classList.add('hidden');
     setupMode.classList.remove('hidden');
+    showStep(1); // Start from beginning
     if (me.rejectionReason) {
       box.innerHTML += `<div style="background:rgba(231,76,60,.1);
         border-left:3px solid var(--danger);padding:12px;border-radius:8px;
@@ -547,11 +596,11 @@ function renderProfile() {
       </div>`;
     }
   } else {
-    // New user or KYC incomplete -> Force Setup Mode
+    // New user or KYC incomplete
     editMode.classList.add('hidden');
     setupMode.classList.remove('hidden');
 
-    // Pre-fill whatever they might have typed
+    // Pre-fill Step 1
     if (me.age && !document.getElementById('k-age').value)
       document.getElementById('k-age').value = me.age;
     if (me.gender && !document.getElementById('k-gender').value)
@@ -563,12 +612,21 @@ function renderProfile() {
     if (me.lang && !document.getElementById('k-lang').value)
       document.getElementById('k-lang').value = me.lang;
 
-    // If they finished step 1 & 2, take them to step 3
-    if (me.rate && me.photo) {
+    // Pre-fill Step 2
+    if (me.rate && !document.getElementById('k-rate').value)
       document.getElementById('k-rate').value = me.rate;
-      if(me.hours) document.getElementById('k-hours').value = me.hours;
-      if(me.services) document.getElementById('k-services').value = me.services;
-      showStep(3); 
+    if (me.hours && !document.getElementById('k-hours').value)
+      document.getElementById('k-hours').value = me.hours;
+    if (me.services && !document.getElementById('k-services').value)
+      document.getElementById('k-services').value = me.services;
+
+    // Decide which step to show
+    if (me.kyc && me.kyc.idNum) {
+      showStep(4); // Step 3 done, show payment
+    } else if (me.rate && me.photo) {
+      showStep(3); // Step 2 done, show KYC
+    } else {
+      showStep(1); // Start
     }
   }
 }
@@ -609,7 +667,7 @@ window.handleEditPhoto = async function(inp) {
 };
 
 /* ============================================================
-   SAVE PROFILE
+   SAVE PROFILE (Edit Mode)
    ============================================================ */
 window.saveProfile = async function() {
   const btn = document.getElementById('saveBtn');
@@ -650,7 +708,7 @@ window.saveProfile = async function() {
 window.showStep = function(n) {
   document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
   document.getElementById('ks' + n).classList.add('active');
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 4; i++) {
     const el = document.getElementById('kstep' + i);
     el.className = 'step';
     if (i < n) el.classList.add('done');
@@ -723,22 +781,53 @@ window.setupStep = async function(n) {
     if (!kycData.idPhoto) return toast('Upload ID photo', 'error');
     if (!kycData.selfie) return toast('Upload selfie', 'error');
     try {
-      // Yahan par status change hoga aur ye Admin ke paas jayega
-      await update(ref(db, 'users/' + me.uid), {
-        kycDone: true,
-        status: 'kyc_pending',
-        rejectionReason: null,
-        kyc: {
-          idType, idNum,
-          idPhoto: kycData.idPhoto,
-          selfie: kycData.selfie,
-          submittedAt: Date.now()
-        }
-      });
-      toast('✅ KYC submitted! Waiting for admin approval', 'success');
+      const newKyc = {
+        idType, idNum,
+        idPhoto: kycData.idPhoto,
+        selfie: kycData.selfie,
+        submittedAt: Date.now()
+      };
+      await update(ref(db, 'users/' + me.uid), { kyc: newKyc });
+      Object.assign(me, { kyc: newKyc });
+      renderProfile();
+      showStep(4); // Go to Payment Step
     } catch (e) {
-      toast('Submit failed: ' + e.message, 'error');
+      toast('Save failed: ' + e.message, 'error');
     }
+    return;
+  }
+};
+
+/* ============================================================
+   PAYMENT SUBMISSION
+   ============================================================ */
+window.copyUpi = function() {
+  navigator.clipboard.writeText('dailylgrow@axl').then(() => {
+    toast('✅ UPI ID copied!', 'success');
+  }).catch(() => toast('Copy failed', 'error'));
+};
+
+window.submitPayment = async function(btn) {
+  const utr = document.getElementById('k-utr').value.trim();
+  if (!utr || utr.length < 8) return toast('Enter valid UTR / Transaction ID', 'error');
+  
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting...';
+
+  try {
+    await update(ref(db, 'users/' + me.uid), {
+      kycDone: true,
+      status: 'kyc_pending',
+      rejectionReason: null,
+      'kyc/utr': utr,
+      'kyc/paymentAmount': 199,
+      'kyc/paymentDate': Date.now()
+    });
+    toast('✅ Payment submitted! Waiting for admin approval', 'success');
+  } catch (e) {
+    toast('Submit failed: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit for Approval ✓';
   }
 };
 
